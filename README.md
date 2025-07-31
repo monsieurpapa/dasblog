@@ -1,103 +1,159 @@
-# Accounting Project
+# DasBlog
 
-## Overview
-A robust, extensible accounting system built with Django, supporting multi-organization fiscal management, double-entry bookkeeping, and comprehensive financial reporting. Designed for clarity, auditability, and ease of use for both technical and non-technical users.
+A modern, extensible blog platform built with Django, Docker, and Bootstrap (Falcon theme). Features include user authentication, internationalization, analytics, newsletter, comments, and a beautiful, responsive UI.
 
-## Features
-- Multi-organization support
-- Fiscal year and accounting period management
-- Chart of Accounts (SYSCOHADA-compliant)
-- Journals and Journal Entries (double-entry)
-- Entry Lines (debit/credit)
-- Trial Balance, General Ledger, Balance Sheet, Income Statement
-- Django admin integration
-- Fine-grained permissions and roles
+---
+
+## 🚀 Features
+- Modern, responsive blog UI (Falcon-based)
+- User registration, login, profile management
+- Comments, categories, tags, newsletter
+- Analytics dashboard (admin only)
+- Internationalization (i18n) with English, French, and Spanish
+- Dockerized for easy local development and deployment
+- Makefile for all common operations
+- Static/media file management
 - Comprehensive test suite
 
-## Tech Stack
-- Python 3.10+
-- Django 4.x
-- SQLite (default, easily swappable)
-- Bootstrap (for templates)
+---
 
-## Setup Instructions
+## 🛠️ Tech Stack
+- Python 3.11+
+- Django 4.x
+- Bootstrap 5 (Falcon theme)
+- Docker & Docker Compose
+- SQLite (default, easily swappable)
+- Celery (for async tasks)
+- django-allauth (authentication)
+- django-widget-tweaks, tinymce, etc.
+
+---
+
+## ⚡ Quickstart (Docker)
+
 1. **Clone the repository:**
    ```bash
-   git clone <repo-url>
-   cd accounting_project
+   git clone https://github.com/monsieurpapa/dasblog.git
+   cd dasblog
    ```
-2. **Create and activate a virtual environment:**
+2. **Build and start the containers:**
+   ```bash
+   make docker-build
+   make docker-up
+   ```
+3. **Apply migrations and create a superuser:**
+   ```bash
+   make migrate
+   make createsuperuser
+   ```
+4. **Collect static files:**
+   ```bash
+   make collectstatic
+   ```
+5. **Access the app:**
+   - Main app: http://localhost:8000/
+   - Admin: http://localhost:8000/admin/
+
+---
+
+## 🧑‍💻 Local Development (without Docker)
+1. Create a virtual environment and activate it:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-3. **Install dependencies:**
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. **Apply migrations:**
+3. Run migrations, create a superuser, and start the server:
    ```bash
-   python manage.py migrate
-   ```
-5. **Create a superuser:**
-   ```bash
-   python manage.py createsuperuser
-   ```
-6. **Run the development server:**
-   ```bash
-   python manage.py runserver
-   ```
-7. **Access the app:**
-   - Main app: http://localhost:8000/
-   - Admin: http://localhost:8000/admin/
-
-## Usage
-- **Admin:** Manage organizations, users, accounts, journals, entries, and periods.
-- **User-facing views:**
-  - Dashboard, Chart of Accounts, Journals, Journal Entries, Fiscal Years, Periods
-  - Reporting: Trial Balance, General Ledger, Balance Sheet, Income Statement
-- **Testing:**
-   ```bash
-   python manage.py test accounting
+   make migrate
+   make createsuperuser
+   make run
    ```
 
-## Permissions & Roles
-- Uses Django's built-in permissions system.
-- Sensitive actions (create/edit/delete/post) require appropriate permissions.
-- Staff and superusers have elevated access (e.g., posting entries, deleting fiscal years).
-- Assign permissions via the Django admin or custom user/group management.
+---
 
-## App Structure
+## 🗂️ Project Structure
 ```
-src/
-  accounting/         # Core accounting logic (models, views, forms, admin, tests)
-  reporting/          # Financial reporting views and templates
-  templates/          # All HTML templates (accounting, reporting, dashboard, etc.)
-  users/, organization/, ... # Supporting apps
-  manage.py           # Django entry point
+dasblog/
+  docker/           # Dockerfiles and configs
+  src/              # Django project root
+    config/         # Django settings, URLs, WSGI/ASGI
+    core/           # Main app: models, views, forms, admin, etc.
+    templates/      # All HTML templates (Falcon-based)
+    static/         # Static files (CSS, JS, images)
+    media/          # Uploaded media files
+    locale/         # Translation files (.po/.mo)
+    manage.py       # Django entry point
+  requirements.txt  # Python dependencies
+  Makefile          # Project automation
+  docker-compose.yml
 ```
 
-## Key Models & Business Logic
-- **FiscalYear, AccountingPeriod:** Manage fiscal years and periods per organization.
-- **ChartOfAccounts:** Hierarchical account structure, supports all major account types.
-- **Journal, JournalEntry, EntryLine:** Double-entry bookkeeping, with posting/finalization logic.
-- **Permissions:** Enforced at both view and model level for all sensitive actions.
+---
 
-## Reporting & Financial Statements
-- **Trial Balance:** Shows opening, period, and closing balances for all accounts.
-- **General Ledger:** Drill-down on all posted entry lines for any account.
-- **Balance Sheet:** Summarizes assets, liabilities, and equity for a fiscal year.
-- **Income Statement:** Summarizes revenues, expenses, and net income for a fiscal year.
+## 📝 Makefile Usage
+All common operations are available via `make`:
 
-## Contribution Guidelines
-- Fork the repo and create a feature branch.
-- Write clear, well-documented code and tests.
-- Follow PEP8 and Django best practices.
-- Submit a pull request with a clear description of your changes.
+- `make docker-build`        # Build Docker images
+- `make docker-up`           # Start containers
+- `make docker-down`         # Stop containers
+- `make docker-logs`         # View logs
+- `make docker-bash`         # Bash shell in Django container
+- `make migrate`             # Run migrations
+- `make createsuperuser`     # Create admin user
+- `make test`                # Run tests
+- `make lint`                # Lint code
+- `make makemessages`        # Extract translation strings
+- `make compilemessages`     # Compile translation files
+- `make collectstatic`       # Collect static files
+- `make clean`               # Remove .pyc/__pycache__
 
-## License
+---
+
+## 🌍 Internationalization (i18n)
+- Supported languages: English, French, Spanish
+- To add/update translations:
+  ```bash
+  make makemessages
+  # Edit .po files in src/locale/
+  make compilemessages
+  ```
+- Language can be switched via the UI or `/i18n/setlang/` endpoint.
+
+---
+
+## 🛡️ Deployment
+- Production deployment is Docker-based. Customize `docker-compose.yml` and `docker/django/Dockerfile` as needed.
+- Set environment variables for secrets and production settings.
+- Use `make collectstatic` and `make migrate` before going live.
+- For custom deployment steps, edit the `deploy` target in the Makefile.
+
+---
+
+## 🧪 Testing & Quality
+- Run all tests: `make test`
+- Lint code: `make lint`
+- Coverage and CI integration recommended for production
+
+---
+
+## 🤝 Contributing
+- Fork the repo and create a feature branch
+- Write clear, well-documented code and tests
+- Follow PEP8 and Django best practices
+- Submit a pull request with a clear description
+
+---
+
+## 📄 License
 [MIT License](LICENSE)
 
-## Contact & Support
-- For issues, use the GitHub issue tracker.
-- For feature requests or questions, open an issue or contact the maintainers. 
+---
+
+## 📬 Contact & Support
+- Use the GitHub issue tracker for bugs and feature requests
+- For questions, open an issue or contact the maintainers
+- Project repo: https://github.com/monsieurpapa/dasblog 
