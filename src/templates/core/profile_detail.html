@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card mb-3">
+        <div class="card-header">
+          <div class="row flex-between-end">
+            <div class="col-auto align-self-center">
+              <h5 class="mb-0 text-800">Profile</h5>
+            </div>
+            <div class="col-auto ms-auto">
+              <a href="{% url 'core:profile_update' %}" class="btn btn-falcon-default btn-sm">
+                <span class="fas fa-edit fs--2 me-1"></span>Edit Profile
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-sm-auto text-center">
+              {% if profile.profile_picture %}
+                <div class="avatar avatar-5xl">
+                  <img class="rounded-soft" src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}" />
+                </div>
+              {% else %}
+                <div class="avatar avatar-5xl">
+                  <div class="avatar-name rounded-soft bg-soft-primary">
+                    <span class="fs-2 text-primary">{{ profile.user.username|first|upper }}</span>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            <div class="col-12 col-sm">
+              <div class="row">
+                <div class="col-auto">
+                  <h4 class="fw-bold text-1000 mb-3">{{ profile.user.get_full_name|default:profile.user.username }}</h4>
+                </div>
+              </div>
+              <div class="row g-2">
+                <div class="col-12">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="fas fa-envelope text-500 me-2"></span>
+                    <span class="text-800">{{ profile.user.email }}</span>
+                  </div>
+                  {% if profile.bio %}
+                    <div class="mb-3">
+                      <p class="text-800 mb-0">{{ profile.bio }}</p>
+                    </div>
+                  {% endif %}
+                  {% if profile.website %}
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="fas fa-globe text-500 me-2"></span>
+                      <a href="{{ profile.website }}" target="_blank" class="text-800 text-decoration-none">{{ profile.website }}</a>
+                    </div>
+                  {% endif %}
+                  {% if profile.twitter_handle %}
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="fab fa-twitter text-500 me-2"></span>
+                      <a href="https://twitter.com/{{ profile.twitter_handle }}" target="_blank" class="text-800 text-decoration-none">@{{ profile.twitter_handle }}</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- User Stats -->
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card py-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-auto">
+              <div class="avatar avatar-2xl">
+                <div class="avatar-name rounded-soft bg-soft-primary">
+                  <span class="fas fa-file-alt fs-1 text-primary"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <p class="fw-semi-bold text-1000 mb-1">Posts</p>
+              <p class="fs--1 text-600 mb-0">{{ profile.user.post_set.count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card py-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-auto">
+              <div class="avatar avatar-2xl">
+                <div class="avatar-name rounded-soft bg-soft-info">
+                  <span class="fas fa-comment fs-1 text-info"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <p class="fw-semi-bold text-1000 mb-1">Comments</p>
+              <p class="fs--1 text-600 mb-0">{{ profile.user.comment_set.count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card py-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-auto">
+              <div class="avatar avatar-2xl">
+                <div class="avatar-name rounded-soft bg-soft-success">
+                  <span class="fas fa-calendar fs-1 text-success"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <p class="fw-semi-bold text-1000 mb-1">Member Since</p>
+              <p class="fs--1 text-600 mb-0">{{ profile.user.date_joined|date:"M Y" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card py-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-auto">
+              <div class="avatar avatar-2xl">
+                <div class="avatar-name rounded-soft bg-soft-warning">
+                  <span class="fas fa-eye fs-1 text-warning"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <p class="fw-semi-bold text-1000 mb-1">Last Login</p>
+              <p class="fs--1 text-600 mb-0">{{ profile.user.last_login|date:"M d, Y"|default:"Never" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

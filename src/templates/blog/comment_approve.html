@@ -1,0 +1,20 @@
+{% extends 'blog/base_blog.html' %}
+{% block blog_content %}
+<div class="card mt-4">
+  <div class="card-header bg-success text-white">
+    <h5>Approve Comment</h5>
+  </div>
+  <div class="card-body">
+    <p>Approve the following comment by <strong>{{ object.author.username }}</strong>?</p>
+    <blockquote class="blockquote">
+      <p>{{ object.content }}</p>
+    </blockquote>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="approved" value="true">
+      <a href="{{ object.post.get_absolute_url }}#comments" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-success">Approve</button>
+    </form>
+  </div>
+</div>
+{% endblock %} 

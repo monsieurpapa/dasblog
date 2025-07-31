@@ -1,0 +1,327 @@
+{% extends 'blog/base_blog.html' %}
+{% load widget_tweaks %}
+
+{% block blog_content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">Subscribe to Our Newsletter</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <h3 class="h5">Stay Updated</h3>
+                            <p class="text-muted">
+                                Get the latest posts, news, and updates delivered straight to your inbox. 
+                                No spam, we promise!
+                            </p>
+                            
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    Weekly blog updates
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    Exclusive content
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    No spam, ever
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    Unsubscribe anytime
+                                </li>
+                            </ul>
+                            
+                            <div class="mt-4">
+                                <h4 class="h6">Follow Us</h4>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-linkedin fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-youtube fa-lg"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="border rounded p-4">
+                                <h3 class="h5 mb-4">Subscribe Now</h3>
+                                
+                                <form method="post" class="needs-validation" novalidate>
+                                    {% csrf_token %}
+                                    
+                                    {% if form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            {% for error in form.non_field_errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mb-3">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                                            Email Address *
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            {{ form.email|add_class:"form-control"|add_error_class:"is-invalid"|attr:"placeholder:your@email.com" }}
+                                            {% if form.email.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ form.email.errors.0 }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-text">
+                                            We'll never share your email with anyone else.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="privacyPolicy" required>
+                                            <label class="form-check-label small" for="privacyPolicy">
+                                                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a> and 
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> *
+                                            </label>
+                                            <div class="invalid-feedback">
+                                                You must agree before subscribing.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane me-2"></i>Subscribe Now
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'core:post_list' %}" class="text-decoration-none small">
+                                        <i class="fas fa-arrow-left me-1"></i> Back to Blog
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5">What to Expect</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <strong>Weekly Digest:</strong> A curated selection of our latest posts
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Exclusive Content:</strong> Special content only for our subscribers
+                                </li>
+                                <li class="mb-2">
+                                    <strong>No Spam:</strong> We respect your inbox
+                                </li>
+                                <li class="mb-2">
+                                    <strong>One-Click Unsubscribe:</strong> Leave anytime with a single click
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5">Why Subscribe?</h3>
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="fas fa-bell text-primary fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h4 class="h6 mb-1">Never Miss a Post</h4>
+                                    <p class="small text-muted mb-0">Get notified when we publish new content.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="fas fa-star text-primary fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h4 class="h6 mb-1">Exclusive Content</h4>
+                                    <p class="small text-muted mb-0">Access to subscriber-only articles and resources.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="fas fa-gift text-primary fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h4 class="h6 mb-1">Special Offers</h4>
+                                    <p class="small text-muted mb-0">Be the first to know about our promotions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyPolicy" tabindex="-1" aria-labelledby="privacyPolicyLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyPolicyLabel">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>1. Information We Collect</h6>
+                    <p>We collect information that you provide directly to us, such as your name and email address when you subscribe to our newsletter.</p>
+                    
+                    <h6 class="mt-4">2. How We Use Your Information</h6>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Send you our newsletter and updates</li>
+                        <li>Respond to your comments and questions</li>
+                        <li>Improve our services</li>
+                    </ul>
+                    
+                    <h6 class="mt-4">3. Data Security</h6>
+                    <p>We implement appropriate security measures to protect your personal information from unauthorized access or disclosure.</p>
+                    
+                    <h6 class="mt-4">4. Your Rights</h6>
+                    <p>You have the right to access, correct, or delete your personal information at any time by contacting us.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Terms of Service Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms of Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>1. Acceptance of Terms</h6>
+                    <p>By subscribing to our newsletter, you agree to be bound by these Terms of Service.</p>
+                    
+                    <h6 class="mt-4">2. Newsletter Content</h6>
+                    <p>We reserve the right to modify or discontinue the newsletter at any time without notice.</p>
+                    
+                    <h6 class="mt-4">3. Unsubscribe</h6>
+                    <p>You can unsubscribe from our newsletter at any time by clicking the unsubscribe link in the footer of our emails.</p>
+                    
+                    <h6 class="mt-4">4. Limitation of Liability</h6>
+                    <p>We are not responsible for any damages resulting from the use of our newsletter or website.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-header {
+        border-bottom: none;
+    }
+    
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+    }
+    
+    /* Custom checkbox styling */
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    /* Modal styling */
+    .modal-content {
+        border: none;
+        border-radius: 0.5rem;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #dee2e6;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+        .card {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enable form validation
+    (function() {
+        'use strict';
+        
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation');
+        
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

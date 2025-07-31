@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row flex-between-end">
+            <div class="col-auto align-self-center">
+              <h5 class="mb-0 text-800">Edit Profile</h5>
+            </div>
+            <div class="col-auto ms-auto">
+              <a href="{% url 'core:profile_detail' %}" class="btn btn-falcon-default btn-sm">
+                <span class="fas fa-arrow-left fs--2 me-1"></span>Back to Profile
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <div class="row g-3">
+              <!-- Profile Picture -->
+              <div class="col-12 col-lg-4">
+                <div class="text-center">
+                  {% if profile.profile_picture %}
+                    <div class="avatar avatar-5xl mb-3">
+                      <img class="rounded-soft" src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}" />
+                    </div>
+                  {% else %}
+                    <div class="avatar avatar-5xl mb-3">
+                      <div class="avatar-name rounded-soft bg-soft-primary">
+                        <span class="fs-2 text-primary">{{ profile.user.username|first|upper }}</span>
+                      </div>
+                    </div>
+                  {% endif %}
+                  
+                  <div class="mb-3">
+                    <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture</label>
+                    <input type="file" name="{{ form.profile_picture.name }}" 
+                           class="form-control" 
+                           id="{{ form.profile_picture.id_for_label }}"
+                           accept="image/*">
+                    {% if form.profile_picture.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.profile_picture.errors %}
+                          {{ error }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                    <div class="form-text">Upload a profile picture (JPG, PNG, GIF)</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Form Fields -->
+              <div class="col-12 col-lg-8">
+                <div class="row g-3">
+                  <!-- Bio -->
+                  <div class="col-12">
+                    <label for="{{ form.bio.id_for_label }}" class="form-label">
+                      <span class="fas fa-user-edit me-1"></span>Bio
+                    </label>
+                    <textarea name="{{ form.bio.name }}" 
+                              class="form-control" 
+                              id="{{ form.bio.id_for_label }}"
+                              rows="4"
+                              placeholder="Tell us about yourself...">{{ form.bio.value|default:'' }}</textarea>
+                    {% if form.bio.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.bio.errors %}
+                          {{ error }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  <!-- Website -->
+                  <div class="col-12 col-md-6">
+                    <label for="{{ form.website.id_for_label }}" class="form-label">
+                      <span class="fas fa-globe me-1"></span>Website
+                    </label>
+                    <input type="url" 
+                           name="{{ form.website.name }}" 
+                           class="form-control" 
+                           id="{{ form.website.id_for_label }}"
+                           placeholder="https://yourwebsite.com"
+                           value="{{ form.website.value|default:'' }}">
+                    {% if form.website.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.website.errors %}
+                          {{ error }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  <!-- Twitter Handle -->
+                  <div class="col-12 col-md-6">
+                    <label for="{{ form.twitter_handle.id_for_label }}" class="form-label">
+                      <span class="fab fa-twitter me-1"></span>Twitter Handle
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text">@</span>
+                      <input type="text" 
+                             name="{{ form.twitter_handle.name }}" 
+                             class="form-control" 
+                             id="{{ form.twitter_handle.id_for_label }}"
+                             placeholder="username"
+                             value="{{ form.twitter_handle.value|default:'' }}">
+                    </div>
+                    {% if form.twitter_handle.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.twitter_handle.errors %}
+                          {{ error }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">
+                    <span class="fas fa-save me-1"></span>Save Changes
+                  </button>
+                  <a href="{% url 'core:profile_detail' %}" class="btn btn-falcon-default">
+                    Cancel
+                  </a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,25 @@
+{% extends 'blog/base_blog.html' %}
+{% block blog_content %}
+<div class="card mt-4">
+  <div class="card-header">
+    <h4>Contact Message</h4>
+  </div>
+  <div class="card-body">
+    <dl class="row">
+      <dt class="col-sm-3">Name</dt>
+      <dd class="col-sm-9">{{ message.name }}</dd>
+      <dt class="col-sm-3">Email</dt>
+      <dd class="col-sm-9">{{ message.email }}</dd>
+      <dt class="col-sm-3">Subject</dt>
+      <dd class="col-sm-9">{{ message.subject|default:'-' }}</dd>
+      <dt class="col-sm-3">Sent At</dt>
+      <dd class="col-sm-9">{{ message.sent_at|date:'M d, Y H:i' }}</dd>
+      <dt class="col-sm-3">Status</dt>
+      <dd class="col-sm-9">{% if message.is_read %}<span class="badge bg-success">Read</span>{% else %}<span class="badge bg-warning text-dark">Unread</span>{% endif %}</dd>
+      <dt class="col-sm-3">Message</dt>
+      <dd class="col-sm-9"><pre class="bg-light p-3">{{ message.message }}</pre></dd>
+    </dl>
+    <a href="{% url 'core:contact_message_list' %}" class="btn btn-secondary">Back to Messages</a>
+  </div>
+</div>
+{% endblock %} 

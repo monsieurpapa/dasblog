@@ -1,0 +1,19 @@
+Django~=4.2
+psycopg2-binary~=2.9
+gunicorn~=21.2
+redis~=5.0
+celery~=5.3
+django-environ~=0.11
+djangorestframework~=3.14
+dj-database-url~=2.1
+django-widget-tweaks~=1.5
+
+django-celery-beat~=2.5
+django-allauth~=0.56
+# django-ckeditor-5
+# Use django-tinymce instead
+django-tinymce
+requests
+cryptography
+Pillow
+django-widget-tweaks

@@ -1,0 +1,442 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block meta %}
+    <meta name="description" content="{% block meta_description %}A modern Django blog{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}blog, django, tech, news{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    {% endblock %}
+
+    <!-- ===============================================-->
+    <!--    Document Title-->
+    <!-- ===============================================-->
+    <title>{% block title %}AGILE SP {% endblock %}</title>
+
+
+    <!-- ===============================================-->
+    <!--    Favicons-->
+    <!-- ===============================================-->
+    {% comment %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'falcon/assets/img/favicons/cmc/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'falcon/assets/img/favicons/cmc/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'falcon/assets/img/favicons/cmc/favicon-16x16.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'falcon/assets/img/favicons/cmc/favicon.ico' %}">
+    <link rel="manifest" href="{% static 'falcon/assets/img/favicons/cmc/manifest.json' %}">
+    <meta name="msapplication-TileImage" content="{% static 'falcon/assets/img/favicons/cmc/mstile-150x150.png' %}">
+    {% endcomment %}
+    <meta name="theme-color" content="#ffffff">
+    <script src="{% static 'falcon/assets/js/config.js' %}"></script>
+    <script src="{% static 'falcon/vendors/overlayscrollbars/OverlayScrollbars.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/leaflet/leaflet.js' %}"></script>    <script src="{% static 'falcon/vendors/leaflet.markercluster/leaflet.markercluster.js' %}"></script>
+    <script src="{% static 'falcon/vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js' %}"></script>
+    
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
+    <link href="{% static 'falcon/vendors/overlayscrollbars/OverlayScrollbars.min.css' %}" rel="stylesheet">
+    <link href="{% static 'falcon/assets/css/theme-rtl.min.css' %}" rel="stylesheet" id="style-rtl">
+    <link href="{% static 'falcon/assets/css/theme.min.css' %}" rel="stylesheet" id="style-default">
+    <link href="{% static 'falcon/assets/css/user-rtl.min.css' %}" rel="stylesheet" id="user-style-rtl">
+    <link href="{% static 'falcon/assets/css/user.min.css' %}" rel="stylesheet" id="user-style-default">
+
+    <link href="{% static 'falcon/vendors/leaflet/leaflet.css' %}" rel="stylesheet" />
+    <link href="{% static 'falcon/vendors/leaflet.markercluster/MarkerCluster.css' %}" rel="stylesheet" />
+    <link href="{% static 'falcon/vendors/leaflet.markercluster/MarkerCluster.Default.css' %}" rel="stylesheet" />  
+    <!-- <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />    -->
+    
+
+    <!-- GA tag -->
+
+    {% if SHOW_GA %}
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag()
+    {dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160286752-1');
+    </script>
+    {% endif %}  
+
+    <!-- Override this block in individual templates in order to add stylesheets on a template by template basis -->
+    {% block extra_css %}{% endblock %}
+
+    <script>
+      var isRTL = JSON.parse(localStorage.getItem('isRTL'));
+      if (isRTL) {
+        var linkDefault = document.getElementById('style-default');
+        var userLinkDefault = document.getElementById('user-style-default');
+        linkDefault.setAttribute('disabled', true);
+        userLinkDefault.setAttribute('disabled', true);
+        document.querySelector('html').setAttribute('dir', 'rtl');
+      } else {
+        var linkRTL = document.getElementById('style-rtl');
+        var userLinkRTL = document.getElementById('user-style-rtl');
+        linkRTL.setAttribute('disabled', true);
+        userLinkRTL.setAttribute('disabled', true);
+      }
+    </script>
+    {% block rendered_variables %}
+    {% endblock %}
+  </head>
+
+
+  <body>
+
+    <!-- ===============================================-->
+    <!--    Navigation Bar-->
+    <!-- ===============================================-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{% url 'core:home' %}">DasBlog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active fw-bold{% endif %}" 
+                 href="{% url 'core:home' %}"
+                 {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>
+                <span class="nav-link-icon me-1">
+                  <i class="fas fa-home"></i>
+                </span>
+                {% trans 'Home' %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'post_list' or request.resolver_match.url_name == 'post_detail' or request.resolver_match.url_name == 'posts_by_category' or request.resolver_match.url_name == 'posts_by_tag' %}active fw-bold{% endif %}" 
+                 href="{% url 'core:post_list' %}"
+                 {% if request.resolver_match.url_name == 'post_list' or request.resolver_match.url_name == 'post_detail' or request.resolver_match.url_name == 'posts_by_category' or request.resolver_match.url_name == 'posts_by_tag' %}aria-current="page"{% endif %}>
+                <span class="nav-link-icon me-1">
+                  <i class="fas fa-blog"></i>
+                </span>
+                {% trans 'Blog' %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'newsletter_subscribe' %}active fw-bold{% endif %}" 
+                 href="{% url 'core:newsletter_subscribe' %}"
+                 {% if request.resolver_match.url_name == 'newsletter_subscribe' %}aria-current="page"{% endif %}>
+                <span class="nav-link-icon me-1">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                {% trans 'Newsletter' %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active fw-bold{% endif %}" 
+                 href="{% url 'core:contact' %}"
+                 {% if request.resolver_match.url_name == 'contact' %}aria-current="page"{% endif %}>
+                <span class="nav-link-icon me-1">
+                  <i class="fas fa-envelope-open-text"></i>
+                </span>
+                {% trans 'Contact' %}
+              </a>
+            </li>
+            {% if request.user.is_staff %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'analytics_dashboard' %}active fw-bold{% endif %}" 
+                   href="{% url 'core:analytics_dashboard' %}"
+                   {% if request.resolver_match.url_name == 'analytics_dashboard' %}aria-current="page"{% endif %}>
+                  <span class="nav-link-icon me-1">
+                    <i class="fas fa-chart-line"></i>
+                  </span>
+                  {% trans 'Analytics' %}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'contact_message_list' or request.resolver_match.url_name == 'contact_message_detail' %}active fw-bold{% endif %}" 
+                   href="{% url 'core:contact_message_list' %}"
+                   {% if request.resolver_match.url_name == 'contact_message_list' or request.resolver_match.url_name == 'contact_message_detail' %}aria-current="page"{% endif %}>
+                  <span class="nav-link-icon me-1">
+                    <i class="fas fa-inbox"></i>
+                  </span>
+                  {% trans 'Messages' %}
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+            <li class="nav-item me-2">
+              <!-- Dark mode toggle -->
+              <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm" title="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+              </button>
+            </li>
+            <li class="nav-item dropdown me-2">
+              <!-- Language switcher -->
+              <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% if LANGUAGE_CODE == 'en' %}EN{% elif LANGUAGE_CODE == 'fr' %}FR{% elif LANGUAGE_CODE == 'es' %}ES{% else %}{{ LANGUAGE_CODE|upper }}{% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                <li><a class="dropdown-item" href="/i18n/setlang/?next={{ request.path }}&language=en">English</a></li>
+                <li><a class="dropdown-item" href="/i18n/setlang/?next={{ request.path }}&language=fr">Français</a></li>
+                <li><a class="dropdown-item" href="/i18n/setlang/?next={{ request.path }}&language=es">Español</a></li>
+              </ul>
+            </li>
+            {% if request.user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'profile_detail' or request.resolver_match.url_name == 'profile_update' %}active fw-bold{% endif %}" 
+                   href="#" 
+                   id="navbarDropdown" 
+                   role="button" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false"
+                   {% if request.resolver_match.url_name == 'profile_detail' or request.resolver_match.url_name == 'profile_update' %}aria-current="page"{% endif %}>
+                  <span class="nav-link-icon me-1">
+                    <i class="fas fa-user-circle"></i>
+                  </span>
+                  {{ request.user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item {% if request.resolver_match.url_name == 'profile_detail' %}active{% endif %}" 
+                       href="{% url 'core:profile_detail' %}">
+                      <i class="fas fa-user me-2"></i>{% trans 'Profile' %}
+                    </a>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'account_logout' %}">
+                      <i class="fas fa-sign-out-alt me-2"></i>{% trans 'Logout' %}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'account_login' %}active fw-bold{% endif %}" 
+                   href="{% url 'account_login' %}"
+                   {% if request.resolver_match.url_name == 'account_login' %}aria-current="page"{% endif %}>
+                  <span class="nav-link-icon me-1">
+                    <i class="fas fa-sign-in-alt"></i>
+                  </span>
+                  {% trans 'Login' %}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active fw-bold{% endif %}" 
+                   href="{% url 'core:register' %}"
+                   {% if request.resolver_match.url_name == 'register' %}aria-current="page"{% endif %}>
+                  <span class="nav-link-icon me-1">
+                    <i class="fas fa-user-plus"></i>
+                  </span>
+                  {% trans 'Register' %}
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <script>
+      // Dark mode toggle logic
+      document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        if (localStorage.getItem('theme') === 'dark') {
+          html.classList.add('dark-mode');
+        }
+        toggle.addEventListener('click', function() {
+          html.classList.toggle('dark-mode');
+          if (html.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+          } else {
+            localStorage.setItem('theme', 'light');
+          }
+        });
+      });
+    </script>
+    <style>
+      /* Active page highlighting styles */
+      .navbar-nav .nav-link {
+        position: relative;
+        transition: all 0.3s ease;
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        margin: 0 0.125rem;
+      }
+      
+      .navbar-nav .nav-link:hover {
+        background-color: rgba(44, 123, 229, 0.1);
+        color: var(--falcon-primary) !important;
+        transform: translateY(-1px);
+      }
+      
+      .navbar-nav .nav-link.active {
+        background-color: var(--falcon-primary);
+        color: white !important;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(44, 123, 229, 0.2);
+      }
+      
+      .navbar-nav .nav-link.active:hover {
+        background-color: #1a5bb8;
+        color: white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(44, 123, 229, 0.3);
+      }
+      
+      .navbar-nav .nav-link.active::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 3px;
+        background-color: var(--falcon-primary);
+        border-radius: 2px;
+      }
+      
+      .nav-link-icon {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+      
+      .navbar-nav .nav-link:hover .nav-link-icon {
+        opacity: 1;
+      }
+      
+      .navbar-nav .nav-link.active .nav-link-icon {
+        opacity: 1;
+      }
+      
+      /* Dropdown active states */
+      .dropdown-toggle.active {
+        background-color: var(--falcon-primary);
+        color: white !important;
+      }
+      
+      .dropdown-item.active {
+        background-color: var(--falcon-primary);
+        color: white;
+      }
+      
+      .dropdown-item:hover {
+        background-color: rgba(44, 123, 229, 0.1);
+        color: var(--falcon-primary);
+      }
+      
+      /* Dark mode compatibility */
+      .dark-mode .navbar-nav .nav-link:hover {
+        background-color: rgba(44, 123, 229, 0.2);
+      }
+      
+      .dark-mode .navbar-nav .nav-link.active {
+        background-color: var(--falcon-primary);
+        color: white !important;
+      }
+      
+      .dark-mode .dropdown-item:hover {
+        background-color: rgba(44, 123, 229, 0.2);
+        color: #80b0ef;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 991.98px) {
+        .navbar-nav .nav-link {
+          margin: 0.25rem 0;
+          border-radius: 0.375rem;
+        }
+        
+        .navbar-nav .nav-link.active::before {
+          display: none;
+        }
+      }
+      
+      /* Animation for page transitions */
+      .navbar-nav .nav-link {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Focus states for accessibility */
+      .navbar-nav .nav-link:focus {
+        outline: 2px solid var(--falcon-primary);
+        outline-offset: 2px;
+      }
+      
+      /* Active state for blog section (includes post detail, category, tag pages) */
+      .navbar-nav .nav-link[aria-current="page"] {
+        background-color: var(--falcon-primary);
+        color: white !important;
+        font-weight: 600;
+      }
+      
+      .dark-mode {
+        background-color: #181a1b !important;
+        color: #f8f9fa !important;
+      }
+      .dark-mode .navbar, .dark-mode .card, .dark-mode .modal-content {
+        background-color: #23272b !important;
+        color: #f8f9fa !important;
+      }
+      .dark-mode .navbar .nav-link, .dark-mode .dropdown-menu, .dark-mode .dropdown-item {
+        color: #f8f9fa !important;
+      }
+      .dark-mode .btn, .dark-mode .form-control, .dark-mode .form-select {
+        background-color: #23272b !important;
+        color: #f8f9fa !important;
+        border-color: #343a40 !important;
+      }
+      .dark-mode .table {
+        color: #f8f9fa !important;
+      }
+      .dark-mode .bg-white, .dark-mode .bg-light {
+        background-color: #23272b !important;
+      }
+      .dark-mode .alert {
+        background-color: #23272b !important;
+        color: #f8f9fa !important;
+        border-color: #343a40 !important;
+      }
+    </style>
+
+    <!-- ===============================================-->
+    <!--    Main Content-->
+    <!-- ===============================================-->
+    <main class="main" id="top">
+      {% block menu %}{% endblock %}
+      {% block content %}{% endblock %}                                
+    </main>           
+    <!-- ===============================================-->
+    <!--    End of Main Content-->
+    <!-- ===============================================-->
+
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{% static 'falcon/vendors/popper/popper.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/bootstrap/bootstrap.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/anchorjs/anchor.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/is/is.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/echarts/echarts.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/fontawesome/all.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/lodash/lodash.min.js' %}"></script>    
+    <script src="{% static 'falcon/vendors/list.js/list.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/chart/chart.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/dayjs/dayjs.min.js' %}"></script>
+    <script src="{% static 'falcon/vendors/lodash/lodash.min.js' %}"></script>
+    <script src="{% static 'falcon/assets/js/theme.js' %}"></script>
+    <script src="{% static 'falcon/assets/js/htmx.min.js' %}" defer></script>    
+    <script src="{% static 'falcon/assets/data/world.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'falcon/assets/js/echart-utils.js' %}"></script> 
+
+    {% block echarts %}{% endblock %}
+    {% block extra_js %}{% endblock %}    
+    {% include 'includes/base.toggle.main.logo.js.html' %}
+    {% include 'includes/navbar.vertical.toggle.loading.js.html' %} 
+  </body>
+</html>

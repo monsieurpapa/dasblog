@@ -1,0 +1,16 @@
+{% extends 'blog/base_blog.html' %}
+{% block blog_content %}
+<div class="card mt-4">
+  <div class="card-header bg-danger text-white">
+    <h4>Delete Post</h4>
+  </div>
+  <div class="card-body">
+    <p>Are you sure you want to delete the post <strong>{{ object.title }}</strong>? This action cannot be undone.</p>
+    <form method="post">
+      {% csrf_token %}
+      <a href="{% url 'core:post_detail' slug=object.slug %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %} 

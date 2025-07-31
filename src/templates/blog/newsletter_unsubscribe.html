@@ -1,0 +1,26 @@
+{% extends 'blog/base_blog.html' %}
+{% block blog_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card mt-5">
+      <div class="card-header bg-danger text-white">
+        <h4>Unsubscribe from Newsletter</h4>
+      </div>
+      <div class="card-body">
+        <p>If you wish to unsubscribe from our newsletter, please enter your email address below.</p>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="mb-3">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <button type="submit" class="btn btn-danger">Unsubscribe</button>
+          <a href="{% url 'core:home' %}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

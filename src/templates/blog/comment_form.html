@@ -1,0 +1,21 @@
+{% extends 'blog/base_blog.html' %}
+{% block blog_content %}
+<div class="card mt-4">
+  <div class="card-header">
+    <h5>Leave a Comment</h5>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        {{ form.content.label_tag }}
+        {{ form.content }}
+        {{ form.content.errors }}
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <a href="javascript:history.back()" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %} 
