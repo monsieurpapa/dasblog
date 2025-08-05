@@ -2,7 +2,25 @@ from django import forms
 from .models import Comment, ContactMessage, NewsletterSubscription
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Post
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'summary', 'category', 'tags', 'featured_image', 'status', 'published_date', 'meta_description', 'meta_keywords', 'canonical_url']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Content'}),
+            'summary': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Summary'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'featured_image': forms.FileInput(attrs={'class': 'form-control-file'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+            'published_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Meta Description'}),
+            'meta_keywords': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Meta Keywords (comma-separated)'}),
+            'canonical_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Canonical URL'}),
+        }
 
 class CommentForm(forms.ModelForm):
     class Meta:
