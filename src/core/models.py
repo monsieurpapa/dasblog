@@ -34,7 +34,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'slug': self.slug})
+        return reverse('core:posts_by_category', kwargs={'category_slug': self.slug})
 
 class Tag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -50,7 +50,7 @@ class Tag(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('tag_detail', kwargs={'slug': self.slug})
+        return reverse('core:posts_by_tag', kwargs={'tag_slug': self.slug})
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -82,17 +82,27 @@ class Post(models.Model):
         ordering = ['-published_date', '-created_at']
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        # Only generate slug if this is a new post or the title has changed
+        if not self.slug or 'title' in [f.name for f in self._meta.fields if f.name in kwargs.get('update_fields', [])]:
+            base_slug = slugify(self.title)
+            self.slug = base_slug
+            # Handle potential slug conflicts
+            counter = 1
+            while Post.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                self.slug = f"{base_slug}-{counter}"
+                counter += 1
+                
         if self.status == 'published' and not self.published_date:
             self.published_date = timezone.now()
+            
+        # Ensure we save the model to generate the slug
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('post_detail', kwargs={'slug': self.slug})
+        return reverse('core:post_detail', kwargs={'pk': self.pk})
 
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
