@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
-from .views import UserRegisterView, ProfileDetailView, ProfileUpdateView, CommentApproveView, CommentDeleteView, NewsletterUnsubscribeView, ContactMessageListView, ContactMessageDetailView, AnalyticsDashboardView
+from .views import (
+    UserRegisterView, ProfileDetailView, ProfileUpdateView, CommentApproveView, 
+    CommentDeleteView, NewsletterUnsubscribeView, ContactMessageListView, 
+    ContactMessageDetailView, AnalyticsDashboardView
+)
+
 app_name = 'core'
 
 urlpatterns = [
@@ -8,33 +13,34 @@ urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('search/', views.SearchResultsView.as_view(), name='search_results'),
     
-    # Posts
+    # Posts - Using plural 'posts' as the base for consistency
     path('posts/', views.PostListView.as_view(), name='post_list'),
-    path('post/<slug:slug>/', views.PostDetailView.as_view(), name='post_detail'),
-    path('post/new/', views.PostCreateView.as_view(), name='post_create'),
-    path('post/<slug:slug>/update/', views.PostUpdateView.as_view(), name='post_update'),
-    path('post/<slug:slug>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
+    path('posts/create/', views.PostCreateView.as_view(), name='post_create'),
+    path('posts/<uuid:pk>/', views.PostDetailView.as_view(), name='post_detail'),
+    path('posts/<uuid:pk>/update/', views.PostUpdateView.as_view(), name='post_update'),
+    path('posts/<uuid:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
+    path('posts/<uuid:pk>/comment/', views.CommentCreateView.as_view(), name='add_comment'),
     
     # Categories and Tags
-    path('category/<slug:category_slug>/', views.PostListView.as_view(), name='posts_by_category'),
-    path('tag/<slug:tag_slug>/', views.PostListView.as_view(), name='posts_by_tag'),
+    path('categories/<slug:category_slug>/', views.PostListView.as_view(), name='posts_by_category'),
+    path('tags/<slug:tag_slug>/', views.PostListView.as_view(), name='posts_by_tag'),
+    
+    # User authentication and profiles
+    path('register/', UserRegisterView.as_view(), name='register'),
+    path('profile/', ProfileDetailView.as_view(), name='profile_detail'),
+    path('profile/edit/', ProfileUpdateView.as_view(), name='profile_update'),
     
     # Comments
-    path('post/<slug:slug>/comment/', views.CommentCreateView.as_view(), name='add_comment'),
+    path('comments/<uuid:pk>/approve/', CommentApproveView.as_view(), name='comment_approve'),
+    path('comments/<uuid:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     
     # Contact and Newsletter
     path('contact/', views.ContactView.as_view(), name='contact'),
     path('newsletter/subscribe/', views.NewsletterSubscribeView.as_view(), name='newsletter_subscribe'),
-]
-
-urlpatterns += [
-    path('register/', UserRegisterView.as_view(), name='register'),
-    path('profile/', ProfileDetailView.as_view(), name='profile_detail'),
-    path('profile/edit/', ProfileUpdateView.as_view(), name='profile_update'),
-    path('comment/<uuid:pk>/approve/', CommentApproveView.as_view(), name='comment_approve'),
-    path('comment/<uuid:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     path('newsletter/unsubscribe/', NewsletterUnsubscribeView.as_view(), name='newsletter_unsubscribe'),
-    path('admin/messages/', ContactMessageListView.as_view(), name='contact_message_list'),
-    path('admin/messages/<uuid:pk>/', ContactMessageDetailView.as_view(), name='contact_message_detail'),
+    
+    # Admin and Dashboard
+    path('contact-messages/', ContactMessageListView.as_view(), name='contact_message_list'),
+    path('contact-messages/<uuid:pk>/', ContactMessageDetailView.as_view(), name='contact_message_detail'),
     path('dashboard/analytics/', AnalyticsDashboardView.as_view(), name='analytics_dashboard'),
 ]

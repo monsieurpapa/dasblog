@@ -28,7 +28,7 @@ urlpatterns = [
 
 # Add i18n URL patterns
 urlpatterns += i18n_patterns(
-    path('', include(('core.urls', 'core'), namespace='core')),  # Core app at root
+    path('', include('core.urls')),  # Core app at root
     prefix_default_language=False,
 )
 
