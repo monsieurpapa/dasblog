@@ -32,7 +32,7 @@
             </div>
             {% if request.user == post.author or request.user.is_superuser %}
                 <div class="mt-4">
-                    <a href="{% url 'core:post_update' slug=post.slug %}" class="btn btn-primary btn-sm me-2">
+                    <a href="{% url 'core:post_update' pk=post.id %}" class="btn btn-primary btn-sm me-2">
                         <i class="fas fa-edit"></i> Edit
                     </a>
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -52,9 +52,9 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <form method="post" action="{% url 'core:post_delete' slug=post.slug %}">
+                                <form method="post" action="{% url 'core:post_delete' pk=post.id %}" class="d-inline">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">Delete Post</button>
                                 </form>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="card-body">
             {% if user.is_authenticated %}
-                <form method="post" action="{% url 'core:add_comment' slug=post.slug %}" class="mb-4">
+                <form method="post" action="{% url 'core:add_comment' pk=post.id %}" class="mb-4">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="comment" class="form-label">Leave a comment</label>
@@ -88,7 +88,7 @@
                 </form>
             {% else %}
                 <p class="text-center">
-                    <a href="{% url 'account_login' %}?next={% url 'core:post_detail' slug=post.slug %}#comments">
+                    <a href="{% url 'account_login' %}?next={% url 'core:post_detail' pk=post.id %}#comments">
                         Log in
                     </a> to leave a comment.
                 </p>
@@ -120,20 +120,16 @@
             <div class="card-body">
                 <div class="row">
                     {% for related_post in related_posts %}
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card h-100 border-0 shadow-sm">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
                                 {% if related_post.featured_image %}
-                                    <img src="{{ related_post.featured_image.url }}" class="card-img-top" alt="{{ related_post.title }}" style="height: 120px; object-fit: cover;">
+                                    <img src="{{ related_post.featured_image.url }}" class="card-img-top" alt="{{ related_post.title }}" style="height: 150px; object-fit: cover;">
                                 {% endif %}
                                 <div class="card-body">
-                                    <h6 class="card-title">
-                                        <a href="{% url 'core:post_detail' slug=related_post.slug %}" class="text-decoration-none">
-                                            {{ related_post.title }}
-                                        </a>
-                                    </h6>
-                                    <p class="card-text small text-muted">
-                                        {{ related_post.published_date|date:"M d, Y" }}
-                                    </p>
+                                    <h5 class="card-title">
+                                        <a href="{% url 'core:post_detail' pk=related_post.id %}" class="text-decoration-none">{{ related_post.title }}</a>
+                                    </h5>
+                                    <p class="card-text text-muted small">{{ related_post.published_date|date:"M d, Y" }}</p>
                                 </div>
                             </div>
                         </div>

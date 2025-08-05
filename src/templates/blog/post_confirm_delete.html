@@ -8,7 +8,7 @@
     <p>Are you sure you want to delete the post <strong>{{ object.title }}</strong>? This action cannot be undone.</p>
     <form method="post">
       {% csrf_token %}
-      <a href="{% url 'core:post_detail' slug=object.slug %}" class="btn btn-secondary">Cancel</a>
+      <a href="{% url 'core:post_detail' pk=object.id %}" class="btn btn-secondary">Cancel</a>
       <button type="submit" class="btn btn-danger">Delete</button>
     </form>
   </div>

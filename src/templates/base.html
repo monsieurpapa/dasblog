@@ -92,7 +92,6 @@
 
     <!-- ===============================================-->
     <!--    Navigation Bar-->
-    <!-- ===============================================-->
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
       <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="{% url 'core:home' %}">DasBlog</a>
@@ -141,6 +140,18 @@
                 {% trans 'Contact' %}
               </a>
             </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'post_create' %}active fw-bold{% endif %}" 
+                 href="{% url 'core:post_create' %}"
+                 {% if request.resolver_match.url_name == 'post_create' %}aria-current="page"{% endif %}>
+                <span class="nav-link-icon me-1">
+                  <i class="fas fa-plus-circle"></i>
+                </span>
+                {% trans 'New Post' %}
+              </a>
+            </li>
+            {% endif %}
             {% if request.user.is_staff %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'analytics_dashboard' %}active fw-bold{% endif %}" 
@@ -238,6 +249,8 @@
         </div>
       </div>
     </nav>
+    <!-- ===============================================-->
+
     <script>
       // Dark mode toggle logic
       document.addEventListener('DOMContentLoaded', function() {
@@ -439,4 +452,5 @@
     {% include 'includes/base.toggle.main.logo.js.html' %}
     {% include 'includes/navbar.vertical.toggle.loading.js.html' %} 
   </body>
+  {% include 'includes/footer.html' %}
 </html>

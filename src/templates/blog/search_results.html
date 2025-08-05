@@ -27,7 +27,7 @@
                             <div class="row g-0 h-100">
                                 {% if post.featured_image %}
                                     <div class="col-md-4">
-                                        <a href="{% url 'core:post_detail' slug=post.slug %}" class="h-100">
+                                        <a href="{% url 'core:post_detail' pk=post.id %}" class="h-100">
                                             <img src="{{ post.featured_image.url }}" 
                                                  class="img-fluid rounded-start h-100" 
                                                  alt="{{ post.title }}"
@@ -51,7 +51,7 @@
                                         </div>
                                         
                                         <h2 class="h4 card-title">
-                                            <a href="{% url 'core:post_detail' slug=post.slug %}" class="text-decoration-none">
+                                            <a href="{% url 'core:post_detail' pk=post.id %}" class="text-decoration-none">
                                                 {{ post.title }}
                                             </a>
                                         </h2>
@@ -68,7 +68,7 @@
                                                 </small>
                                             </div>
                                             <div>
-                                                <a href="{% url 'core:post_detail' slug=post.slug %}" 
+                                                <a href="{% url 'core:post_detail' pk=post.id %}" 
                                                    class="btn btn-sm btn-outline-primary">
                                                     Read More
                                                 </a>
@@ -166,13 +166,13 @@
                         <div class="col">
                             <div class="card h-100">
                                 {% if post.featured_image %}
-                                    <a href="{% url 'core:post_detail' slug=post.slug %}">
+                                    <a href="{% url 'core:post_detail' pk=post.id %}">
                                         <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
                                     </a>
                                 {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <a href="{% url 'core:post_detail' slug=post.slug %}" class="text-decoration-none">
+                                        <a href="{% url 'core:post_detail' pk=post.id %}" class="text-decoration-none">
                                             {{ post.title }}
                                         </a>
                                     </h5>
