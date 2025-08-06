@@ -1,58 +1,100 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# French translations for PACKAGE package.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-31 14:01+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2025-08-06 14:58+0000\n"
+"PO-Revision-Date: 2025-08-06 19:04+0200\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language: fr\n"
+"Language-Team: French\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: templates/base.html:112
-msgid "Home"
-msgstr ""
 
-#: templates/base.html:122
-msgid "Blog"
-msgstr ""
-
-#: templates/base.html:132
-msgid "Newsletter"
-msgstr ""
-
-#: templates/base.html:142
-msgid "Contact"
-msgstr ""
-
-#: templates/base.html:153
-msgid "Analytics"
-msgstr ""
-
-#: templates/base.html:163
-msgid "Messages"
-msgstr ""
-
-#: templates/base.html:205
-msgid "Profile"
-msgstr ""
-
-#: templates/base.html:211
-msgid "Logout"
-msgstr ""
-
-#: templates/base.html:224
+#: templates/auth/login.html:4 templates/auth/login.html:12
+#: templates/auth/login.html:48 templates/base.html:239
 msgid "Login"
-msgstr ""
+msgstr "Connexion"
 
-#: templates/base.html:234
+#: templates/auth/login.html:19
+msgid "Email"
+msgstr "E-mail"
+
+#: templates/auth/login.html:22
+msgid "Enter your email"
+msgstr "Entrez votre e-mail"
+
+#: templates/auth/login.html:31
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/auth/login.html:34
+msgid "Enter your password"
+msgstr "Entrez votre mot de passe"
+
+#: templates/auth/login.html:45
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#: templates/auth/login.html:55
+msgid "Forgot password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/auth/register.html:4 templates/auth/register.html:11
+#: templates/auth/register.html:50 templates/base.html:249
 msgid "Register"
-msgstr ""
+msgstr "S'inscrire"
+
+#: templates/auth/register.html:54
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+#: templates/auth/register.html:54
+msgid "Login here"
+msgstr "Connectez-vous ici"
+
+#: templates/base.html:111
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/base.html:121
+msgid "Blog"
+msgstr "Blog"
+
+#: templates/base.html:131
+msgid "Newsletter"
+msgstr "Lettre d'information"
+
+#: templates/base.html:141
+msgid "Contact"
+msgstr "Contact"
+
+#: templates/base.html:152
+msgid "New Post"
+msgstr "Nouvel article"
+
+#: templates/base.html:164
+msgid "Analytics"
+msgstr "Analytiques"
+
+#: templates/base.html:174
+msgid "Messages"
+msgstr "Messages"
+
+#: templates/base.html:220
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/base.html:226
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/includes/language_selector.html:8
+msgid "Select language"
+msgstr "Sélectionner la langue"

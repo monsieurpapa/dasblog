@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<form action="{% url 'set_language' %}" method="post" class="d-inline">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" id="languageDropdown" 
+                data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'Select language' %}">
+            <i class="fas fa-language me-1"></i>
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_language_info for LANGUAGE_CODE as lang %}
+            {{ lang.name_local|title }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <li>
+                    <button type="submit" name="language" value="{{ language.code }}" 
+                            class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                        {{ language.name_local|title }} ({{ language.code }})
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</form>
