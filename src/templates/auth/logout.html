@@ -1,17 +1,18 @@
 {% extends 'auth_layout.html' %}
+{% load i18n %}
 
-{% block title %}Déconnexion | Système de Comptabilité{% endblock %}
+{% block title %}{% trans "Logout" %} | DasBlog{% endblock %}
 
-{% block auth_title %}Déconnexion{% endblock %}
+{% block auth_title %}{% trans "Logout" %}{% endblock %}
 
 {% block auth_content %}
 <div class="text-center">
-    <p class="mb-4">Êtes-vous sûr de vouloir vous déconnecter?</p>
-    <form method="post" action="{% url 'logout' %}">
+    <p class="mb-4">{% trans "Are you sure you want to log out?" %}</p>
+    <form method="post" action="{% url 'account_logout' %}">
         {% csrf_token %}
         <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">Confirmer la déconnexion</button>
-            <a href="{% url 'accounting:dashboard' %}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{% trans "Confirm logout" %}</button>
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
         </div>
     </form>
 </div>
@@ -19,6 +20,6 @@
 
 {% block auth_footer %}
 <div class="small">
-    <p>Merci d'avoir utilisé notre système de comptabilité.</p>
+    <p>{% trans "Thanks for visiting our blog." %}</p>
 </div>
 {% endblock %}

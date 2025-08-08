@@ -1,6 +1,15 @@
 {% extends 'blog/base_blog.html' %}
 {% load widget_tweaks %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="container mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Contact</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block blog_content %}
     <div class="row justify-content-center">
         <div class="col-lg-8">

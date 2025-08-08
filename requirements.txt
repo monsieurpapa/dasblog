@@ -17,3 +17,5 @@ requests
 cryptography
 Pillow
 django-widget-tweaks
+django-allauth
+django-crispy-forms

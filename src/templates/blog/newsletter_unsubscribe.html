@@ -1,4 +1,16 @@
 {% extends 'blog/base_blog.html' %}
+{% load widget_tweaks %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="container mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'core:newsletter_subscribe' %}">Newsletter</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Unsubscribe</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block blog_content %}
 <div class="row justify-content-center">
   <div class="col-lg-6">
@@ -13,11 +25,13 @@
           {{ form.non_field_errors }}
           <div class="mb-3">
             {{ form.email.label_tag }}
-            {{ form.email }}
-            {{ form.email.errors }}
+            {{ form.email|add_class:"form-control" }}
+            {% if form.email.errors %}
+              <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+            {% endif %}
           </div>
           <button type="submit" class="btn btn-danger">Unsubscribe</button>
-          <a href="{% url 'core:home' %}" class="btn btn-secondary ms-2">Cancel</a>
+          <a href="{% url 'core:newsletter_subscribe' %}" class="btn btn-secondary ms-2">Cancel</a>
         </form>
       </div>
     </div>

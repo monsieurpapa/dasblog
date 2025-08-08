@@ -1,12 +1,29 @@
 {% extends 'blog/base_blog.html' %}
 {% load static %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="container mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'core:post_list' %}">Blog</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatechars:40 }}</li>
+  </ol>
+  <div class="d-none d-md-block ms-auto"></div>
+  
+</nav>
+{% endblock %}
+
 {% block blog_content %}
     <article class="card shadow-sm border-0 mb-4">
         {% if post.featured_image %}
             <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 350px; object-fit: cover;">
         {% endif %}
         <div class="card-body">
+            <div class="mb-3">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
             <div class="d-flex align-items-center mb-3">
                 <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=random" class="rounded-circle me-2" width="48" height="48" alt="{{ post.author.username }}">
                 <div>

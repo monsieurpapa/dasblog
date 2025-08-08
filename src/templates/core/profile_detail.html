@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="container mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'core:profile_detail' %}">Profile</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Overview</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
   <div class="row g-3 mb-3">
