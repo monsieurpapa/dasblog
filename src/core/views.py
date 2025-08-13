@@ -4,13 +4,13 @@ from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator  # noqa: F401 (potential future use)
 from django.utils import timezone
-from django.utils.text import slugify
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView  # noqa: F401
+from allauth.account.views import LoginView as AllauthLoginView
 from django.contrib.auth import login
-from .forms import UserRegisterForm, ProfileUpdateForm, CommentForm, ContactForm, NewsletterForm, PostForm
-from .models import Profile, Post, Category, Tag, Comment, Series, NewsletterSubscription, ContactMessage, Analytics
+from .forms import UserRegisterForm, ProfileUpdateForm
+from .models import Profile, Post, Category, Tag, Comment, NewsletterSubscription, ContactMessage, Analytics
 from .forms import CommentForm, ContactForm, NewsletterForm, PostForm
 
 class PostListView(ListView):
@@ -57,54 +57,9 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
-    pk_url_kwarg = 'pk'  # Explicitly set the URL kwarg name
     
     def get_queryset(self):
-        # For now, return all posts regardless of status for debugging
-        return Post.objects.all()
-    
-    def get_object(self, queryset=None):
-        # Debug output
-        print("\n=== DEBUG: PostDetailView.get_object() ===")
-        print(f"URL kwargs: {self.kwargs}")
-        print(f"Request path: {self.request.path}")
-        
-        # Get the UUID from URL kwargs
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        print(f"Raw pk from URL: {pk} (type: {type(pk)})")
-        
-        # If we have a string, try to convert it to UUID
-        if isinstance(pk, str):
-            try:
-                import uuid
-                pk = uuid.UUID(pk)
-                print(f"Converted to UUID: {pk} (type: {type(pk)})")
-            except ValueError as e:
-                print(f"Error converting to UUID: {e}")
-        
-        # Get the base queryset
-        if queryset is None:
-            queryset = self.get_queryset()
-        
-        # Try to get the post with the given UUID
-        try:
-            post = queryset.get(pk=pk)
-            print(f"Found post: {post.title} (ID: {post.id}, Status: {post.status})")
-            return post
-        except Post.DoesNotExist:
-            print(f"Post with pk={pk} does not exist")
-        except ValueError as e:
-            print(f"ValueError: {e}")
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-        
-        # Debug: Print all posts in the database
-        print("\n=== DEBUG: All posts in database ===")
-        for post in Post.objects.all().order_by('-created_at')[:5]:
-            print(f"- {post.title} (ID: {post.id}, Status: {post.status})")
-        
-        # Raise 404 with more detailed error message
-        raise Http404(f"Post with ID {pk} not found. Please check the ID and try again.")
+        return Post.objects.filter(status='published')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -134,15 +89,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         if form.instance.status == 'published' and not form.instance.published_date:
             form.instance.published_date = timezone.now()
-        
-        # Save the form and get the created post
-        response = super().form_valid(form)
         messages.success(self.request, 'Post created successfully!')
-        return response
+        return super().form_valid(form)
     
     def get_success_url(self):
-        # Ensure we're using the correct UUID in the success URL
-        return reverse_lazy('core:post_detail', kwargs={'pk': self.object.id})
+        if self.object.status == 'published':
+            return reverse_lazy('core:post_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('core:post_list')
+
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -185,12 +139,14 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     template_name = 'blog/comment_form.html'
     
     def form_valid(self, form):
+        # Get the post using the UUID from the URL
         form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
         form.instance.author = self.request.user
         messages.success(self.request, 'Your comment has been submitted and is awaiting moderation.')
         return super().form_valid(form)
     
     def get_success_url(self):
+        # Redirect back to the post using its UUID
         return reverse_lazy('core:post_detail', kwargs={'pk': self.kwargs['pk']}) + '#comments'
 
 
@@ -307,6 +263,10 @@ class HomeView(TemplateView):
         context['categories'] = Category.objects.all()
         context['featured_post'] = Post.objects.filter(status='published', featured_image__isnull=False).order_by('-published_date').first()
         return context
+
+
+class AccountLoginView(AllauthLoginView):
+    template_name = 'auth/login.html'
 
 class CommentApproveView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment

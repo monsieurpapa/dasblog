@@ -1,0 +1,50 @@
+{% extends 'auth_layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Login" %} | DasBlog{% endblock %}
+
+{% block auth_title %}{% trans "Login" %}{% endblock %}
+
+{% block auth_content %}
+<form method="post" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+  </div>
+  {% endif %}
+  <div class="mb-3">
+    <label for="id_login" class="form-label">{% trans "Email" %}</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+      {{ form.login }}
+    </div>
+  </div>
+  <div class="mb-3">
+    <label for="id_password" class="form-label">{% trans "Password" %}</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+      {{ form.password }}
+    </div>
+  </div>
+  <div class="form-check mb-3">
+    {{ form.remember }}
+    <label class="form-check-label" for="id_remember">{% trans "Remember me" %}</label>
+  </div>
+  <div class="d-grid">
+    <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
+  </div>
+  {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+  {% endif %}
+</form>
+{% endblock %}
+
+{% block auth_footer %}
+<div class="small">
+  <a href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a>
+</div>
+{% endblock %}
+
+
+

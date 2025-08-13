@@ -1,63 +1,61 @@
-{% extends 'base.html' %}
+{% extends 'auth_layout.html' %}
 {% load i18n %}
 
 {% block title %}{% trans "Login" %} | DasBlog{% endblock %}
 
-{% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-5 col-md-7">
-      <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header text-center">
-          <h3 class="fw-light my-4">{% trans "Login" %}</h3>
-        </div>
-        <div class="card-body">
-          {% include 'components/alerts.html' %}
-          <form method="post" action="{% url 'account_login' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="id_login" class="form-label">{% trans "Email" %}</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="id_login" name="login" placeholder="{% trans 'Enter your email' %}" required>
-              </div>
-              {% if form.login.errors %}
-              <div class="invalid-feedback d-block">
-                {% for error in form.login.errors %}{{ error }}{% endfor %}
-              </div>
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              <label for="id_password" class="form-label">{% trans "Password" %}</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="id_password" name="password" placeholder="{% trans 'Enter your password' %}" required>
-                <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="fas fa-eye"></i></button>
-              </div>
-              {% if form.password.errors %}
-              <div class="invalid-feedback d-block">
-                {% for error in form.password.errors %}{{ error }}{% endfor %}
-              </div>
-              {% endif %}
-            </div>
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="id_remember" name="remember">
-              <label class="form-check-label" for="id_remember">{% trans "Remember me" %}</label>
-            </div>
-            <div class="d-grid">
-              <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
-            </div>
-            <input type="hidden" name="next" value="{{ next }}">
-          </form>
-        </div>
-        <div class="card-footer text-center py-3">
-          <div class="small">
-            <a href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a>
-          </div>
-        </div>
-      </div>
-    </div>
+{% block auth_title %}{% trans "Login" %}{% endblock %}
+
+{% block auth_content %}
+<form method="post" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
   </div>
+  {% endif %}
+  <div class="mb-3">
+    <label for="id_login" class="form-label">{% trans "Email" %}</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+      <input type="email" class="form-control" id="id_login" name="login" placeholder="{% trans 'Enter your email' %}" value="{{ form.login.value|default:'' }}" required>
+    </div>
+    {% if form.login.errors %}
+    <div class="invalid-feedback d-block">
+      {% for error in form.login.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    <label for="id_password" class="form-label">{% trans "Password" %}</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+      <input type="password" class="form-control" id="id_password" name="password" placeholder="{% trans 'Enter your password' %}" required>
+      <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="fas fa-eye"></i></button>
+    </div>
+    {% if form.password.errors %}
+    <div class="invalid-feedback d-block">
+      {% for error in form.password.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="id_remember" name="remember">
+    <label class="form-check-label" for="id_remember">{% trans "Remember me" %}</label>
+  </div>
+  <div class="d-grid">
+    <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
+  </div>
+  {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+  {% elif next %}
+    <input type="hidden" name="next" value="{{ next }}">
+  {% endif %}
+</form>
+{% endblock %}
+
+{% block auth_footer %}
+<div class="small">
+  <a href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a>
 </div>
 {% endblock %}
 

@@ -16,13 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from core.views import AccountLoginView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
-from django.views.i18n import set_language
+from django.views.i18n import set_language  # noqa: F401
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Override Allauth login with our custom template view
+    path('accounts/login/', AccountLoginView.as_view(), name='account_login'),
     path('accounts/', include('allauth.urls')),  # django-allauth URLs
     path('tinymce/', include('tinymce.urls')),
     path('i18n/', include('django.conf.urls.i18n')),  # Language switching
