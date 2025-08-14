@@ -2,61 +2,129 @@
 {% load static %}
 
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="container mb-3">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'core:post_list' %}">Blog</a></li>
+<nav aria-label="breadcrumb" class="container mb-4">
+  <ol class="breadcrumb bg-light rounded-3 px-3 py-2 mb-0">
+    <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-decoration-none text-primary fw-medium">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'core:post_list' %}" class="text-decoration-none text-primary fw-medium">Blog</a></li>
     {% if category %}
-      <li class="breadcrumb-item active" aria-current="page">Category: {{ category.name }}</li>
+      <li class="breadcrumb-item active fw-semibold" aria-current="page">Category: {{ category.name }}</li>
     {% elif tag %}
-      <li class="breadcrumb-item active" aria-current="page">Tag: #{{ tag.name }}</li>
+      <li class="breadcrumb-item active fw-semibold" aria-current="page">Tag: #{{ tag.name }}</li>
     {% endif %}
   </ol>
 </nav>
 {% endblock %}
 
 {% block blog_content %}
-    <h1 class="mb-4 fw-bold display-5">{% if category %}{{ category.name }}{% elif tag %}#{{ tag.name }}{% else %}Latest Posts{% endif %}</h1>
+    <!-- <CHANGE> Enhanced header with better typography and spacing -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h1 class="display-4 fw-bold text-dark mb-2">
+                {% if category %}
+                    <span class="text-primary">{{ category.name }}</span>
+                {% elif tag %}
+                    <span class="text-info">#{{ tag.name }}</span>
+                {% else %}
+                    Latest <span class="text-primary">Posts</span>
+                {% endif %}
+            </h1>
+            <p class="text-muted fs-5 mb-0">Discover our latest articles and insights</p>
+        </div>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'core:post_create' %}" class="btn btn-primary btn-lg rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i>Create Post
+        </a>
+        {% endif %}
+    </div>
+
     <div class="row g-4">
     {% for post in posts %}
         <div class="col-12">
-            <article class="card shadow-sm border-0 hover-shadow mb-4">
-                <div class="row g-0 align-items-center">
+            <!-- <CHANGE> Enhanced card with Falcon-style design and hover effects -->
+            <article class="card border-0 shadow-sm hover-lift-light rounded-4 overflow-hidden transition-all">
+                <div class="row g-0 align-items-stretch">
                     {% if post.featured_image %}
-                    <div class="col-md-4">
-                        <a href="{% url 'core:post_detail' pk=post.id %}">
-                            <img src="{{ post.featured_image.url }}" class="img-fluid rounded-start w-100" alt="{{ post.title }}" style="height: 220px; object-fit: cover;">
+                    <div class="col-md-4 position-relative">
+                        <a href="{% url 'core:post_detail' pk=post.id %}" class="d-block h-100">
+                            <div class="image-container h-100 position-relative overflow-hidden">
+                                <img src="{{ post.featured_image.url }}" 
+                                     class="img-fluid w-100 h-100 hover-zoom transition-transform" 
+                                     alt="{{ post.title }}" 
+                                     style="height: 280px; object-fit: cover;">
+                                <div class="image-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-0 transition-opacity"></div>
+                            </div>
                         </a>
                     </div>
                     {% endif %}
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=random" class="rounded-circle me-2" width="40" height="40" alt="{{ post.author.username }}">
-                                <div>
-                                    <span class="fw-semibold">{{ post.author.get_full_name|default:post.author.username }}</span>
-                                    <span class="text-muted small ms-2"><i class="far fa-calendar-alt"></i> {{ post.published_date|date:"M d, Y" }}</span>
+                    <div class="{% if post.featured_image %}col-md-8{% else %}col-12{% endif %}">
+                        <div class="card-body p-4 h-100 d-flex flex-column">
+                            <!-- <CHANGE> Enhanced author section with better styling -->
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-container me-3">
+                                    <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=6366f1&color=fff&size=48&font-size=0.6" 
+                                         class="rounded-circle shadow-sm" 
+                                         width="48" height="48" 
+                                         alt="{{ post.author.username }}">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold text-dark mb-1">{{ post.author.get_full_name|default:post.author.username }}</div>
+                                    <div class="text-muted small d-flex align-items-center">
+                                        <i class="far fa-calendar-alt me-1 text-primary"></i>
+                                        {{ post.published_date|date:"M d, Y" }}
+                                        <span class="mx-2">•</span>
+                                        <i class="far fa-clock me-1 text-primary"></i>
+                                        5 min read
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-2">
+
+                            <!-- <CHANGE> Enhanced badges with better styling and spacing -->
+                            <div class="mb-3">
                                 {% if post.category %}
-                                    <a href="{% url 'core:posts_by_category' category_slug=post.category.slug %}" class="badge bg-primary text-decoration-none">{{ post.category.name }}</a>
+                                    <a href="{% url 'core:posts_by_category' category_slug=post.category.slug %}" 
+                                       class="badge bg-primary-soft text-primary text-decoration-none rounded-pill px-3 py-2 fw-medium me-2">
+                                        <i class="fas fa-folder me-1"></i>{{ post.category.name }}
+                                    </a>
                                 {% endif %}
                                 {% if post.tags.exists %}
-                                    <span class="ms-2">
                                     {% for tag in post.tags.all %}
-                                        <a href="{% url 'core:posts_by_tag' tag_slug=tag.slug %}" class="badge bg-light text-dark text-decoration-none">#{{ tag.name }}</a>
+                                        <a href="{% url 'core:posts_by_tag' tag_slug=tag.slug %}" 
+                                           class="badge bg-light text-secondary text-decoration-none rounded-pill px-3 py-2 fw-medium me-1 mb-1 hover-bg-secondary hover-text-white transition-colors">
+                                            #{{ tag.name }}
+                                        </a>
                                     {% endfor %}
-                                    </span>
                                 {% endif %}
                             </div>
-                            <h2 class="card-title h4 fw-bold mb-2">
-                                <a href="{% url 'core:post_detail' pk=post.id %}" class="text-decoration-none text-dark">{{ post.title }}</a>
+
+                            <!-- <CHANGE> Enhanced title and content with better typography -->
+                            <h2 class="card-title h3 fw-bold mb-3 flex-grow-1">
+                                <a href="{% url 'core:post_detail' pk=post.id %}" 
+                                   class="text-decoration-none text-dark hover-text-primary transition-colors">
+                                    {{ post.title }}
+                                </a>
                             </h2>
-                            <p class="card-text text-muted">{{ post.summary|default:post.content|striptags|truncatewords:30 }}</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <a href="{% url 'core:post_detail' pk=post.id %}" class="btn btn-outline-primary btn-sm">Read More &rarr;</a>
-                                <small class="text-muted"><i class="far fa-comment"></i> {{ post.comments.count }} comments</small>
+                            
+                            <p class="card-text text-muted lh-relaxed mb-4">
+                                {{ post.summary|default:post.content|striptags|truncatewords:25 }}
+                            </p>
+
+                            <!-- <CHANGE> Enhanced footer with better button and stats styling -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-light">
+                                <a href="{% url 'core:post_detail' pk=post.id %}" 
+                                   class="btn btn-outline-primary rounded-pill px-4 fw-medium hover-lift-sm transition-all">
+                                    Read Article
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                                <div class="d-flex align-items-center text-muted">
+                                    <div class="me-3">
+                                        <i class="far fa-comment me-1 text-primary"></i>
+                                        <span class="fw-medium">{{ post.comments.count }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="far fa-eye me-1 text-primary"></i>
+                                        <span class="fw-medium">1.2k</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -64,54 +132,131 @@
             </article>
         </div>
     {% empty %}
-        <div class="alert alert-info">
-            No posts found.
+        <!-- <CHANGE> Enhanced empty state with better design -->
+        <div class="col-12">
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-newspaper text-muted" style="font-size: 4rem;"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-3">No Posts Found</h3>
+                <p class="text-muted mb-4">There are no posts to display at the moment.</p>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'core:post_create' %}" class="btn btn-primary rounded-pill px-4">
+                    <i class="fas fa-plus me-2"></i>Create Your First Post
+                </a>
+                {% endif %}
+            </div>
         </div>
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'core:post_create' %}" class="btn btn-sm btn-outline-primary float-end">Create Post</a>
-        {% endif %}
     {% endfor %}
     </div>
-    <!-- Pagination -->
+
+    <!-- <CHANGE> Enhanced pagination with Falcon-style design -->
     {% if is_paginated %}
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" class="mt-5">
             <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-label="First">
-                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        <a class="page-link rounded-pill me-1 border-0 bg-light text-dark hover-bg-primary hover-text-white transition-colors" 
+                           href="?page=1" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
+                        <a class="page-link rounded-pill me-1 border-0 bg-light text-dark hover-bg-primary hover-text-white transition-colors" 
+                           href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
                         </a>
                     </li>
                 {% endif %}
+                
                 {% for num in page_obj.paginator.page_range %}
                     {% if page_obj.number == num %}
                         <li class="page-item active">
-                            <span class="page-link">{{ num }}</span>
+                            <span class="page-link rounded-pill me-1 border-0 bg-primary text-white shadow-sm">{{ num }}</span>
                         </li>
                     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            <a class="page-link rounded-pill me-1 border-0 bg-light text-dark hover-bg-primary hover-text-white transition-colors" 
+                               href="?page={{ num }}">{{ num }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
+                
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
+                        <a class="page-link rounded-pill me-1 border-0 bg-light text-dark hover-bg-primary hover-text-white transition-colors" 
+                           href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        <a class="page-link rounded-pill me-1 border-0 bg-light text-dark hover-bg-primary hover-text-white transition-colors" 
+                           href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
                         </a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
     {% endif %}
+
+    <!-- <CHANGE> Added custom CSS for enhanced effects -->
+    <style>
+        .hover-lift-light:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .hover-lift-sm:hover {
+            transform: translateY(-2px);
+        }
+        
+        .hover-zoom:hover {
+            transform: scale(1.05);
+        }
+        
+        .image-container:hover .image-overlay {
+            opacity: 0.1 !important;
+        }
+        
+        .hover-bg-primary:hover {
+            background-color: var(--bs-primary) !important;
+        }
+        
+        .hover-text-white:hover {
+            color: white !important;
+        }
+        
+        .hover-text-primary:hover {
+            color: var(--bs-primary) !important;
+        }
+        
+        .hover-bg-secondary:hover {
+            background-color: var(--bs-secondary) !important;
+        }
+        
+        .bg-primary-soft {
+            background-color: rgba(99, 102, 241, 0.1) !important;
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        .transition-transform {
+            transition: transform 0.3s ease;
+        }
+        
+        .transition-opacity {
+            transition: opacity 0.3s ease;
+        }
+        
+        .transition-colors {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        
+        .lh-relaxed {
+            line-height: 1.7;
+        }
+    </style>
 {% endblock %}
