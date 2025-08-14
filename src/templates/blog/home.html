@@ -4,184 +4,385 @@
 {% block content %}
 
 <div class="container-fluid">
-  <!-- Hero Section -->
-<section class="hero-section position-relative text-white">
-  <div class="bg-holder" style="
-    background-image: url('{% static 'falcon/assets/img/generic/bg-1.jpg' %}');
-    background-size: cover; background-position: center; min-height: 85vh;">
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
-  </div>
-
-  <div class="container position-relative py-6 py-lg-10 text-center">
-    <span class="badge bg-primary bg-opacity-25 text-white mb-3 px-4 py-2 rounded-pill">
-      Welcome to Our Blog
-    </span>
-    <h1 class="display-3 fw-bold mb-4">Discover Amazing Content</h1>
-    <p class="lead mb-5 col-lg-8 mx-auto">
-      Explore our collection of articles, tutorials, and insights to fuel your curiosity and expand your knowledge.
-    </p>
-    <div class="d-flex justify-content-center gap-3 flex-wrap">
-      <a href="{% url 'core:post_list' %}" class="btn btn-primary btn-lg px-4 shadow-sm">
-        <i class="fas fa-book-reader me-2"></i>Read Our Stories
-      </a>
-      <a href="#featured" class="btn btn-outline-light btn-lg px-4">
-        <i class="fas fa-arrow-down me-2"></i>Explore
-      </a>
-    </div>
-  </div>
-
-  <!-- Decorative wave -->
-  <div class="position-absolute bottom-0 start-0 w-100">
-    <svg class="text-white" viewBox="0 0 1200 120" preserveAspectRatio="none">
-      <path d="M0,0V46.29c47.79,22.2,103.59,32.17..." opacity=".25" fill="currentColor"></path>
-      <path d="M0,0V46.29c47.79,22.2,103.59,32.17..." opacity=".5" fill="currentColor"></path>
-      <path d="M0,0V46.29c47.79,22.2,103.59,32.17..." fill="currentColor"></path>
-    </svg>
-  </div>
-</section>
-<!-- Categories -->
-<section class="py-6 bg-light">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="fw-bold">Featured & Categories</h2>
-      <p class="text-muted">Our top story and topics to explore</p>
+  <!-- Enhanced Hero Section -->
+  <section class="hero-section position-relative text-white overflow-hidden">
+    <div class="bg-holder" style="
+      background-image: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(168, 85, 247, 0.8)), url('{% static 'falcon/assets/img/generic/bg-1.jpg' %}');
+      background-size: cover; 
+      background-position: center; 
+      min-height: 90vh;
+      background-attachment: fixed;">
     </div>
 
-    <div class="row g-5 align-items-stretch">
-      {% if featured_post %}
-      <!-- Featured Post Column -->
-      <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="position-relative">
-            {% if featured_post.featured_image %}
-            <img src="{{ featured_post.featured_image.url }}" 
-                 class="card-img-top" 
-                 alt="{{ featured_post.title }}"
-                 style="height: 280px; object-fit: cover;">
-            {% endif %}
-            <span class="badge bg-primary text-white position-absolute top-0 start-0 m-3 px-3 py-2">
-              Featured
-            </span>
-          </div>
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-center mb-3">
-              <span class="badge bg-primary bg-opacity-10 text-primary me-3">
-                {{ featured_post.category.name }}
+    <!-- Animated background particles -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);"></div>
+
+    <div class="container position-relative py-6 py-lg-12 text-center">
+      <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+        <span class="badge bg-white bg-opacity-20 text-white mb-4 px-5 py-3 rounded-pill fs-6 fw-medium backdrop-blur">
+          <i class="fas fa-sparkles me-2"></i>Welcome to Our Blog
+        </span>
+      </div>
+      
+      <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
+        <h1 class="display-2 fw-bold mb-4 lh-1" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          Discover Amazing<br>
+          <span style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Content</span>
+        </h1>
+      </div>
+      
+      <div class="animate-fade-in-up" style="animation-delay: 0.6s;">
+        <p class="lead mb-6 col-lg-8 mx-auto fs-5 text-white-50 lh-lg">
+          Explore our collection of articles, tutorials, and insights to fuel your curiosity and expand your knowledge with expert-crafted content.
+        </p>
+      </div>
+      
+      <div class="animate-fade-in-up d-flex justify-content-center gap-4 flex-wrap" style="animation-delay: 0.8s;">
+        <a href="{% url 'core:post_list' %}" class="btn btn-light btn-lg px-5 py-3 shadow-lg rounded-pill fw-semibold hover-lift">
+          <i class="fas fa-book-reader me-2"></i>Read Our Stories
+        </a>
+        <a href="#featured" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-semibold hover-lift backdrop-blur">
+          <i class="fas fa-arrow-down me-2"></i>Explore
+        </a>
+      </div>
+    </div>
+
+    <!-- Enhanced decorative wave -->
+    <div class="position-absolute bottom-0 start-0 w-100">
+      <svg class="text-white" viewBox="0 0 1200 120" preserveAspectRatio="none" style="height: 60px;">
+        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
+        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor"></path>
+        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Enhanced Categories Section -->
+  <section id="featured" class="py-7 bg-gradient-light">
+    <div class="container">
+      <div class="text-center mb-6 animate-fade-in-up">
+        <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-4 py-2 rounded-pill fw-medium">
+          <i class="fas fa-star me-2"></i>Featured Content
+        </span>
+        <h2 class="display-5 fw-bold mb-3">Featured & Categories</h2>
+        <p class="text-muted fs-5 col-lg-6 mx-auto">Discover our top story and explore topics that matter to you</p>
+      </div>
+
+      <div class="row g-5 align-items-stretch">
+        {% if featured_post %}
+        <!-- Enhanced Featured Post Column -->
+        <div class="col-lg-6 animate-fade-in-left">
+          <div class="card border-0 shadow-lg h-100 rounded-4 overflow-hidden hover-lift-lg">
+            <div class="position-relative overflow-hidden">
+              {% if featured_post.featured_image %}
+              <img src="{{ featured_post.featured_image.url }}" 
+                  class="card-img-top hover-zoom" 
+                  alt="{{ featured_post.title }}"
+                  style="height: 320px; object-fit: cover; transition: transform 0.5s ease;">
+              {% endif %}
+              <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-overlay"></div>
+              <span class="badge bg-primary text-white position-absolute top-0 start-0 m-4 px-4 py-2 rounded-pill fw-semibold shadow">
+                <i class="fas fa-crown me-2"></i>Featured
               </span>
-              <small class="text-muted">
-                <i class="far fa-clock me-1"></i> {{ featured_post.published_date|timesince }} ago
-              </small>
-            </div>
-            <h4 class="fw-bold">{{ featured_post.title }}</h4>
-            <p class="text-muted flex-grow-1">{{ featured_post.summary|truncatewords:30 }}</p>
-            <div class="d-flex align-items-center mt-3">
-              <img src="https://ui-avatars.com/api/?name={{ featured_post.author.username }}&background=random" 
-                   class="rounded-circle me-3" width="45"
-                   alt="{{ featured_post.author.username }}">
-              <div>
-                <h6 class="mb-0">{{ featured_post.author.get_full_name|default:featured_post.author.username }}</h6>
-                <small class="text-muted">{{ featured_post.author.profile.title|default:"Author" }}</small>
+              <div class="position-absolute bottom-0 start-0 p-4">
+                <span class="badge bg-white bg-opacity-90 text-dark px-3 py-2 rounded-pill fw-medium">
+                  {{ featured_post.category.name }}
+                </span>
               </div>
-              <a href="{{ featured_post.get_absolute_url }}" class="btn btn-outline-primary btn-sm ms-auto">
-                Read Full Story <i class="fas fa-arrow-right ms-2"></i>
-              </a>
             </div>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-
-      <!-- Categories Column -->
-      <div class="col-lg-6">
-        <div class="row g-4">
-          {% for category in categories %}
-          <div class="col-6 col-md-4">
-            <a href="{% url 'core:posts_by_category' category.slug %}" class="text-decoration-none">
-              <div class="card h-100 border-0 shadow-sm text-center p-4 rounded-3 hover-shadow">
-                <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3 p-3">
-                  <i class="fas fa-folder-open fa-lg"></i>
+            <div class="card-body p-5 d-flex flex-column">
+              <div class="d-flex align-items-center mb-4">
+                <small class="text-muted d-flex align-items-center">
+                  <i class="far fa-clock me-2"></i> {{ featured_post.published_date|timesince }} ago
+                </small>
+              </div>
+              <h3 class="fw-bold mb-3 lh-sm">{{ featured_post.title }}</h3>
+              <p class="text-muted flex-grow-1 fs-6 lh-lg">{{ featured_post.summary|truncatewords:25 }}</p>
+              <div class="d-flex align-items-center mt-4 pt-4 border-top">
+                <img src="https://ui-avatars.com/api/?name={{ featured_post.author.username }}&background=6366f1&color=fff&bold=true" 
+                    class="rounded-circle me-3 shadow-sm" width="50" height="50"
+                    alt="{{ featured_post.author.username }}">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1 fw-semibold">{{ featured_post.author.get_full_name|default:featured_post.author.username }}</h6>
+                  <small class="text-muted">{{ featured_post.author.profile.title|default:"Author" }}</small>
                 </div>
-                <h6 class="mb-1">{{ category.name }}</h6>
-                <small class="text-muted">{{ category.post_set.count }} posts</small>
-              </div>
-            </a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Recent Posts -->
-<section class="py-6">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="fw-bold">Latest Articles</h2>
-      <p class="text-muted">Discover our most recent publications</p>
-    </div>
-    <div class="row g-4">
-      {% for post in recent_posts %}
-      <div class="col-lg-4 col-md-6">
-        <div class="card h-100 border-0 shadow-sm hover-shadow">
-          {% if post.featured_image %}
-          <div class="overflow-hidden" style="height: 200px;">
-            <img src="{{ post.featured_image.url }}" 
-                 class="img-fluid w-100 h-100" 
-                 alt="{{ post.title }}"
-                 style="object-fit: cover; transition: transform 0.3s ease;">
-          </div>
-          {% endif %}
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-center mb-3">
-              <span class="badge bg-primary bg-opacity-10 text-primary me-2">{{ post.category.name }}</span>
-              <small class="text-muted">
-                <i class="far fa-clock me-1"></i> {{ post.published_date|timesince }} ago
-              </small>
-            </div>
-            <h5 class="fw-bold">{{ post.title }}</h5>
-            <p class="text-muted">{{ post.summary|truncatewords:20 }}</p>
-            <div class="mt-auto pt-3 border-top">
-              <div class="d-flex align-items-center">
-                <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=random" 
-                     class="rounded-circle me-2" width="32"
-                     alt="{{ post.author.username }}">
-                <small class="flex-grow-1">{{ post.author.get_full_name|default:post.author.username }}</small>
-                <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
-                  Read More
+                <a href="{{ featured_post.get_absolute_url }}" class="btn btn-primary btn-lg rounded-pill px-4 hover-lift">
+                  Read Story <i class="fas fa-arrow-right ms-2"></i>
                 </a>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {% empty %}
-      <div class="col-12 text-center py-5">
-        <div class="display-1 text-muted mb-3">
-          <i class="far fa-newspaper"></i>
-        </div>
-        <h3>No articles yet</h3>
-        <p class="text-muted">Check back later for new content!</p>
-      </div>
-      {% endfor %}
-    </div>
-    {% if recent_posts %}
-    <div class="text-center mt-5">
-      <a href="{% url 'core:post_list' %}" class="btn btn-outline-primary btn-lg">
-        View All Articles <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-    </div>
-    {% endif %}
-  </div>
-</section>
+        {% endif %}
 
+        <!-- Enhanced Categories Column -->
+        <div class="col-lg-6 animate-fade-in-right">
+          <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-6 col-md-4">
+              <a href="{% url 'core:posts_by_category' category.slug %}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm text-center p-4 rounded-4 hover-lift category-card">
+                  <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3 p-3 hover-icon">
+                    <i class="fas fa-folder-open fa-lg"></i>
+                  </div>
+                  <h6 class="mb-2 fw-semibold">{{ category.name }}</h6>
+                  <small class="text-muted">{{ category.post_set.count }} posts</small>
+                </div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhanced Recent Posts Section -->
+  <section class="py-7 bg-white">
+    <div class="container">
+      <div class="text-center mb-6 animate-fade-in-up">
+        <span class="badge bg-success bg-opacity-10 text-success mb-3 px-4 py-2 rounded-pill fw-medium">
+          <i class="fas fa-newspaper me-2"></i>Latest Updates
+        </span>
+        <h2 class="display-5 fw-bold mb-3">Latest Articles</h2>
+        <p class="text-muted fs-5 col-lg-6 mx-auto">Stay updated with our most recent publications and insights</p>
+      </div>
+      
+      <div class="row g-5">
+        {% for post in recent_posts %}
+        <div class="col-lg-4 col-md-6 animate-fade-in-up" style="animation-delay: {{ forloop.counter0|add:2|floatformat:1 }}s;">
+          <article class="card h-100 border-0 shadow-lg hover-lift-lg rounded-4 overflow-hidden">
+            {% if post.featured_image %}
+            <div class="overflow-hidden position-relative" style="height: 240px;">
+              <img src="{{ post.featured_image.url }}" 
+                  class="img-fluid w-100 h-100 hover-zoom" 
+                  alt="{{ post.title }}"
+                  style="object-fit: cover; transition: transform 0.5s ease;">
+              <div class="position-absolute top-0 end-0 m-3">
+                <span class="badge bg-primary bg-opacity-90 text-white px-3 py-2 rounded-pill fw-medium">
+                  {{ post.category.name }}
+                </span>
+              </div>
+            </div>
+            {% endif %}
+            <div class="card-body p-4 d-flex flex-column">
+              <div class="d-flex align-items-center mb-3">
+                <small class="text-muted d-flex align-items-center">
+                  <i class="far fa-clock me-2"></i> {{ post.published_date|timesince }} ago
+                </small>
+              </div>
+              <h5 class="fw-bold mb-3 lh-sm">{{ post.title }}</h5>
+              <p class="text-muted flex-grow-1 lh-lg">{{ post.summary|truncatewords:18 }}</p>
+              <div class="mt-auto pt-4 border-top">
+                <div class="d-flex align-items-center">
+                  <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=random&bold=true" 
+                      class="rounded-circle me-3 shadow-sm" width="40" height="40"
+                      alt="{{ post.author.username }}">
+                  <div class="flex-grow-1">
+                    <small class="fw-semibold d-block">{{ post.author.get_full_name|default:post.author.username }}</small>
+                    <small class="text-muted">Author</small>
+                  </div>
+                  <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 hover-lift">
+                    Read More
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-6">
+          <div class="display-1 text-muted mb-4 animate-bounce">
+            <i class="far fa-newspaper"></i>
+          </div>
+          <h3 class="fw-bold mb-3">No articles yet</h3>
+          <p class="text-muted fs-5">Check back later for new content!</p>
+        </div>
+        {% endfor %}
+      </div>
+      
+      {% if recent_posts %}
+      <div class="text-center mt-6 animate-fade-in-up">
+        <a href="{% url 'core:post_list' %}" class="btn btn-outline-primary btn-lg px-5 py-3 rounded-pill fw-semibold hover-lift">
+          View All Articles <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
 </div>
+
+<!-- Enhanced Custom Styles -->
+<style>
+  .bg-gradient-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+  
+  .bg-gradient-overlay {
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+  }
+  
+  .backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .hover-lift {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  }
+  
+  .hover-lift-lg {
+    transition: all 0.4s ease;
+  }
+  
+  .hover-lift-lg:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+  }
+  
+  .hover-zoom {
+    transition: transform 0.5s ease;
+  }
+  
+  .hover-zoom:hover {
+    transform: scale(1.05);
+  }
+  
+  .category-card:hover .hover-icon {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .animate-fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  
+  .animate-fade-in-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation: fadeInLeft 0.8s ease forwards;
+  }
+  
+  .animate-fade-in-right {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: fadeInRight 0.8s ease forwards;
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+      transform: translate3d(0,-15px,0);
+    }
+    70% {
+      transform: translate3d(0,-7px,0);
+    }
+    90% {
+      transform: translate3d(0,-2px,0);
+    }
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Enhanced card shadows */
+  .shadow-lg {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+</style>
 
 {% block extra_js %}
 <script>
-  // Optional: Image hover zoom effect
-  document.querySelectorAll('.card img').forEach(img => {
-    img.addEventListener('mouseover', () => img.style.transform = 'scale(1.05)');
-    img.addEventListener('mouseout', () => img.style.transform = 'scale(1)');
+  // Enhanced animations and interactions
+  document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, observerOptions);
+    
+    // Observe all animated elements
+    document.querySelectorAll('[class*="animate-"]').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+    
+    // Enhanced image hover effects
+    document.querySelectorAll('.hover-zoom').forEach(img => {
+      img.addEventListener('mouseenter', () => {
+        img.style.transform = 'scale(1.05)';
+      });
+      img.addEventListener('mouseleave', () => {
+        img.style.transform = 'scale(1)';
+      });
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+    
+    // Parallax effect for hero background
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const hero = document.querySelector('.hero-section .bg-holder');
+      if (hero) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+    });
   });
 </script>
 {% endblock %}
