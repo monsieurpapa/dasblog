@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from core.views import AccountLoginView
+from core import analytics_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language  # noqa: F401
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,8 +36,18 @@ urlpatterns = [
 # Add i18n URL patterns
 urlpatterns += i18n_patterns(
     path('', include('core.urls')),  # Core app at root
+    path('analytics/', include('core.analytics_urls', namespace='analytics')),
     prefix_default_language=False,
 )
+
+# Add analytics URLs outside i18n patterns since they use their own i18n handling
+urlpatterns += [
+    path('analytics/post/<uuid:pk>/', login_required(
+        user_passes_test(lambda u: u.is_staff)(
+            analytics_views.PostAnalyticsView.as_view()
+        )
+    ), name='post_analytics_redirect'),
+]
 
 # Serve static and media files in development
 if settings.DEBUG:

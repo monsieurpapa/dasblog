@@ -1,0 +1,368 @@
+{% extends 'analytics/base_analytics.html' %}
+{% load i18n humanize %}
+
+{% block analytics_title %}{% trans "Analytics Dashboard" %}{% endblock %}
+
+{% block analytics_content %}
+<div class="row mb-4">
+    <!-- Summary Cards -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            {% trans "Total Views (30 days)" %}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ daily_views|sum:"views"|intcomma }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-eye fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            {% trans "Total Posts" %}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ top_posts|length|intcomma }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-newspaper fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            {% trans "Categories" %}
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ category_views|length }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tags fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            {% trans "Recent Comments" %}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ recent_comments|length }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Area Chart -->
+    <div class="col-xl-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Views Overview" %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="viewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="col-xl-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Views by Category" %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    {% for cat in category_views|slice:":5" %}
+                    <span class="me-2">
+                        <i class="fas fa-circle" style="color: {{ cat.chart_color }}"></i> {{ cat.category__name }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Posts -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">{% trans "Top Posts" %}</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Title" %}</th>
+                        <th>{% trans "Category" %}</th>
+                        <th>{% trans "Views" %}</th>
+                        <th>{% trans "Published" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in top_posts %}
+                    <tr>
+                        <td>
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                        </td>
+                        <td>{{ post.category.name|default:"-" }}</td>
+                        <td>{{ post.view_count|intcomma }}</td>
+                        <td>{{ post.published_date|date:"M d, Y"|default:"Draft" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">{% trans "No posts found" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Comments -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">{% trans "Recent Comments" %}</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Post" %}</th>
+                        <th>{% trans "Author" %}</th>
+                        <th>{% trans "Comment" %}</th>
+                        <th>{% trans "Date" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comment in recent_comments %}
+                    <tr>
+                        <td>
+                            <a href="{{ comment.post.get_absolute_url }}">
+                                {{ comment.post.title|truncatechars:30 }}
+                            </a>
+                        </td>
+                        <td>{{ comment.author.username }}</td>
+                        <td>{{ comment.content|truncatechars:50 }}</td>
+                        <td>{{ comment.created_at|timesince }} {% trans "ago" %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">{% trans "No comments found" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Area Chart
+var ctx = document.getElementById('viewsChart');
+var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for day in daily_views %}
+                '{{ day.date|date:"M d" }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Views',
+            lineTension: 0.3,
+            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+            borderColor: 'rgba(78, 115, 223, 1)',
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+            pointBorderColor: 'rgba(78, 115, 223, 1)',
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+            pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            data: [
+                {% for day in daily_views %}
+                    {{ day.views|default:0 }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 25,
+                bottom: 0
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    maxTicksLimit: 7
+                }
+            },
+            y: {
+                ticks: {
+                    maxTicksLimit: 5,
+                    padding: 10,
+                    callback: function(value) {
+                        return value.toLocaleString();
+                    }
+                },
+                grid: {
+                    color: 'rgb(234, 236, 244)',
+                    zeroLineColor: 'rgb(234, 236, 244)',
+                    drawBorder: false,
+                    borderDash: [2],
+                    zeroLineBorderDash: [2]
+                }
+            },
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'rgb(255,255,255)',
+                bodyColor: '#858796',
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                intersect: false,
+                mode: 'index',
+                caretPadding: 10,
+                callbacks: {
+                    label: function(context) {
+                        var label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += context.parsed.y.toLocaleString();
+                        }
+                        return label;
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Pie Chart
+var ctx = document.getElementById('categoryChart');
+var myPieChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: [
+            {% for cat in category_views %}
+                '{{ cat.category__name }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            data: [
+                {% for cat in category_views %}
+                    {{ cat.views|default:0 }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: [
+                {% for cat in category_views %}
+                    '{{ cat.chart_color|default:"#4e73df" }}'{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            hoverBackgroundColor: [
+                {% for cat in category_views %}
+                    '{{ cat.chart_color|default:"#2e59d9" }}'{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            hoverBorderColor: 'rgba(234, 236, 244, 1)',
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            tooltip: {
+                backgroundColor: 'rgb(255,255,255)',
+                bodyColor: '#858796',
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(context) {
+                        var label = context.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed !== null) {
+                            label += context.parsed.toLocaleString() + ' views';
+                        }
+                        return label;
+                    }
+                }
+            },
+            legend: {
+                display: false
+            },
+        },
+        cutout: '80%',
+    },
+});
+</script>
+{% endblock %}

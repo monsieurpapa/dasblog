@@ -1,0 +1,100 @@
+{% load i18n %}
+
+<div class="search-widget mb-4">
+    <form method="get" action="{% url 'core:search_results' %}" class="search-form" role="search">
+        <div class="input-group">
+            <input type="search" 
+                   name="q" 
+                   class="form-control" 
+                   placeholder="{% trans 'Search posts...' %}" 
+                   aria-label="{% trans 'Search' %}"
+                   value="{{ request.GET.q|default:'' }}">
+            <button class="btn btn-primary" type="submit" aria-label="{% trans 'Search' %}">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        {% if show_advanced %}
+        <div class="advanced-search-options mt-2">
+            <div class="accordion" id="advancedSearchOptions">
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header" id="advancedSearchHeading">
+                        <button class="accordion-button collapsed p-0 bg-transparent text-muted small" 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#advancedSearchCollapse" 
+                                aria-expanded="false" 
+                                aria-controls="advancedSearchCollapse">
+                            <i class="fas fa-sliders-h me-1"></i> {% trans 'Advanced search' %}
+                        </button>
+                    </h2>
+                    <div id="advancedSearchCollapse" class="accordion-collapse collapse" 
+                         aria-labelledby="advancedSearchHeading" data-bs-parent="#advancedSearchOptions">
+                        <div class="accordion-body p-0 pt-2">
+                            <div class="row g-2">
+                                {% if categories %}
+                                <div class="col-12">
+                                    <label for="category" class="form-label small mb-1">{% trans 'Category' %}</label>
+                                    <select name="category" id="category" class="form-select form-select-sm">
+                                        <option value="">{% trans 'All Categories' %}</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.slug }}" 
+                                                {% if request.GET.category == category.slug %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="col-12">
+                                    <label for="sort" class="form-label small mb-1">{% trans 'Sort by' %}</label>
+                                    <select name="sort" id="sort" class="form-select form-select-sm">
+                                        <option value="relevance" {% if request.GET.sort == 'relevance' or not request.GET.sort %}selected{% endif %}>{% trans 'Relevance' %}</option>
+                                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>{% trans 'Newest First' %}</option>
+                                        <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans 'Oldest First' %}</option>
+                                        <option value="title_asc" {% if request.GET.sort == 'title_asc' %}selected{% endif %}>{% trans 'Title (A-Z)' %}</option>
+                                        <option value="title_desc" {% if request.GET.sort == 'title_desc' %}selected{% endif %}>{% trans 'Title (Z-A)' %}</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12 mt-2">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-filter me-1"></i> {% trans 'Apply Filters' %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit sort dropdown when changed
+    const sortSelect = document.querySelector('#sort');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    }
+    
+    // Handle search form submission
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            const searchInput = this.querySelector('input[name="q"]');
+            if (searchInput && searchInput.value.trim() === '') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -3,7 +3,7 @@ from . import views
 from .views import (
     UserRegisterView, ProfileDetailView, ProfileUpdateView, CommentApproveView, 
     CommentDeleteView, NewsletterUnsubscribeView, ContactMessageListView, 
-    ContactMessageDetailView, AnalyticsDashboardView
+    ContactMessageDetailView, AnalyticsDashboardView, SearchResultsView
 )
 
 app_name = 'core'
@@ -11,7 +11,7 @@ app_name = 'core'
 urlpatterns = [
     # Home and search
     path('', views.HomeView.as_view(), name='home'),
-    path('search/', views.SearchResultsView.as_view(), name='search_results'),
+    path('search/', SearchResultsView.as_view(), name='search_results'),
     
     # Posts - Using plural 'posts' as the base for consistency
     path('posts/', views.PostListView.as_view(), name='post_list'),

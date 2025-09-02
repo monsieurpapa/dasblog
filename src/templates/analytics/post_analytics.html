@@ -1,0 +1,299 @@
+{% extends 'analytics/base_analytics.html' %}
+{% load i18n humanize %}
+
+{% block analytics_title %}{% trans "Post Analytics" %}: {{ post.title }}{% endblock %}
+
+{% block analytics_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Views Over Time" %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="viewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Weekly Views" %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="weeklyViewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Post Details" %}</h6>
+            </div>
+            <div class="card-body">
+                <h4 class="h5">{{ post.title }}</h4>
+                <div class="small text-muted">
+                    {% if post.published_date %}
+                        {% trans "Published" %}: {{ post.published_date|date:"M d, Y" }}
+                    {% else %}
+                        <span class="text-warning">{% trans "Draft" %}</span>
+                    {% endif %}
+                    <br>
+                    {% trans "Status" %}: 
+                    <span class="badge {% if post.status == 'published' %}bg-success{% else %}bg-secondary{% endif %}">
+                        {{ post.get_status_display }}
+                    </span>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h5 font-weight-bold text-gray-800">
+                                {{ post.analytics.view_count|default:0|intcomma }}
+                            </div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% trans "Total Views" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h5 font-weight-bold text-gray-800">
+                                {{ post.comments.count|intcomma }}
+                            </div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                {% trans "Comments" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm" target="_blank">
+                        <i class="fas fa-external-link-alt fa-sm"></i> {% trans "View Post" %}
+                    </a>
+                    <a href="{% url 'admin:core_post_change' post.id %}" class="btn btn-info btn-sm">
+                        <i class="fas fa-edit fa-sm"></i> {% trans "Edit Post" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{% trans "Top Referrers" %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center text-muted small">
+                    {% trans "Referrer data will be available in a future update." %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">{% trans "Recent Comments" %}</h6>
+    </div>
+    <div class="card-body">
+        {% if post.comments.all %}
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Author" %}</th>
+                            <th>{% trans "Comment" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Date" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in post.comments.all|slice:":5" %}
+                        <tr>
+                            <td>{{ comment.author.username }}</td>
+                            <td>{{ comment.content|truncatechars:50 }}</td>
+                            <td>
+                                <span class="badge {% if comment.approved %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if comment.approved %}{% trans "Approved" %}{% else %}{% trans "Pending" %}{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ comment.created_at|timesince }} {% trans "ago" %}</td>
+                            <td>
+                                <a href="{% url 'admin:core_comment_change' comment.id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-right mt-2">
+                <a href="{% url 'admin:core_comment_changelist' %}?post__id__exact={{ post.id }}" class="btn btn-sm btn-primary">
+                    {% trans "View All Comments" %}
+                </a>
+            </div>
+        {% else %}
+            <div class="text-center text-muted">
+                {% trans "No comments yet." %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Daily Views Chart
+var ctx = document.getElementById('viewsChart');
+var dailyChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for day in daily_views %}
+                '{{ day.date|date:"M d" }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: '{% trans "Views" %}',
+            lineTension: 0.3,
+            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+            borderColor: 'rgba(78, 115, 223, 1)',
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+            pointBorderColor: 'rgba(78, 115, 223, 1)',
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+            pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            data: [
+                {% for day in daily_views %}
+                    {{ day.views|default:0 }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    maxTicksLimit: 7
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    maxTicksLimit: 5,
+                    padding: 10
+                },
+                grid: {
+                    color: 'rgb(234, 236, 244)',
+                    zeroLineColor: 'rgb(234, 236, 244)',
+                    drawBorder: false,
+                    borderDash: [2],
+                    zeroLineBorderDash: [2]
+                }
+            },
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'rgb(255,255,255)',
+                bodyColor: '#858796',
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                intersect: false,
+                mode: 'index',
+                caretPadding: 10
+            }
+        }
+    }
+});
+
+// Weekly Views Chart
+var ctx2 = document.getElementById('weeklyViewsChart');
+var weeklyChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: [
+            {% for week in weekly_views %}
+                '{{ week.week|date:"M d" }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: '{% trans "Views" %}',
+            backgroundColor: 'rgba(54, 185, 204, 0.5)',
+            borderColor: 'rgba(54, 185, 204, 1)',
+            borderWidth: 1,
+            data: [
+                {% for week in weekly_views %}
+                    {{ week.views|default:0 }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                },
+                grid: {
+                    color: 'rgb(234, 236, 244)',
+                    zeroLineColor: 'rgb(234, 236, 244)',
+                    drawBorder: false,
+                    borderDash: [2],
+                    zeroLineBorderDash: [2]
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'rgb(255,255,255)',
+                bodyColor: '#858796',
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
